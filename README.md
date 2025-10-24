@@ -91,7 +91,7 @@ Développer un module robuste de **gestion des fournisseurs** en utilisant les f
         "city": "Mekness",
         "ice": 988989397549578
     },
-    "message": "Le fournisseur de mail "fournissour3@gmial.com" a étre ajouté avec succès !"
+    "message": "Le fournisseur de mail 'fournissour3@gmial.com' a étre ajouté avec succès !"
 }
 
 ```

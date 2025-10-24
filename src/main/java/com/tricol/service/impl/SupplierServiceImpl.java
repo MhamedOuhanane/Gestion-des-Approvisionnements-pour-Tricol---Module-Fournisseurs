@@ -22,7 +22,7 @@ public class SupplierServiceImpl implements SupplierService {
         if (dto == null) throw new IllegalArgumentException("Les informations de fournisseur ne peut pas étre vides");
         try {
             Supplier supplier = supplierRepository.save(SupplierMapper.toEntity(dto));
-            return Map.of("message", "Le fournisseur de mail \"" + supplier.getEmail() + "\" a été ajouté avec succès !", "supplier", SupplierMapper.toDTO(supplier));
+            return Map.of("message", "Le fournisseur de mail '" + supplier.getEmail() + "' a été ajouté avec succès !", "supplier", SupplierMapper.toDTO(supplier));
         } catch (RuntimeException e) {
             return Map.of("error", e.getMessage(), "supplier", dto);
         }
@@ -78,7 +78,7 @@ public class SupplierServiceImpl implements SupplierService {
 
             if (!updated) return Map.of("warning", "Il n'y a aucune modification à apporter aux informations du fournisseur.", "supplier", supplier);
             supplier = supplierRepository.save(supplier);
-            return Map.of("message", "Les information du fournisseur de mail \"" + supplier.getEmail() + "\" est modifié avec succès!", "supplier", SupplierMapper.toDTO(supplier));
+            return Map.of("message", "Les information du fournisseur de mail '" + supplier.getEmail() + "' est modifié avec succès!", "supplier", SupplierMapper.toDTO(supplier));
         } catch (RuntimeException e) {
             return Map.of("error", e.getMessage(), "supplier", null);
         }
@@ -102,7 +102,7 @@ public class SupplierServiceImpl implements SupplierService {
         try {
             Supplier supplier = supplierRepository.findById(uuid).orElseThrow(() -> new RuntimeException("Ce fournisseur n'existe pas"));
             supplierRepository.delete(supplier);
-            return Map.of("message", "Le fournisseur de mail \"" + supplier.getEmail() + "\" est supprimè avec succès!", "supplier", SupplierMapper.toDTO(supplier));
+            return Map.of("message", "Le fournisseur de mail '" + supplier.getEmail() + "' est supprimè avec succès!", "supplier", SupplierMapper.toDTO(supplier));
         } catch (RuntimeException e) {
             return Map.of("error", e.getMessage(), "supplier", null);
         }
