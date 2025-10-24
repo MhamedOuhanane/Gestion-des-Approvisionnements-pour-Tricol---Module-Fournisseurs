@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
            http://www.springframework.org/schema/beans
-           http://www.springframework.org/schema/beans/spring-beans.xsd
-           http://www.springframework.org/schema/mvc
-           http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+           http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <mvc:annotation-driven>
-        <mvc:message-converters>
-            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
-        </mvc:message-converters>
-    </mvc:annotation-driven>
+    <import resource="applicationContext.xml"/>
 
+    <bean id="supplierController" class="com.tricol.controller.SupplierController">
+        <constructor-arg ref="supplierService"/>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="mappings">
+            <props>
+                <prop key="/suppliers">supplierController</prop>
+            </props>
+        </property>
+    </bean>
 
 </beans>
