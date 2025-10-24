@@ -10,11 +10,11 @@ public class SupplierDTO {
     private String email;
     private String phone;
     private String city;
-    private Long ICE;
+    private Long ice;
 
     public SupplierDTO() {}
 
-    public SupplierDTO(UUID uuid, String company, String address, String contact, String email, String phone, String city, Long ICE) {
+    public SupplierDTO(UUID uuid, String company, String address, String contact, String email, String phone, String city, Long ice) {
         this.uuid = uuid;
         this.company = company;
         this.address = address;
@@ -22,7 +22,7 @@ public class SupplierDTO {
         this.email = email;
         this.phone = phone;
         this.city = city;
-        this.ICE = ICE;
+        this.ice = ice;
     }
 
     public UUID getUuid() {
@@ -81,11 +81,11 @@ public class SupplierDTO {
         this.city = city;
     }
 
-    public Long getICE() {
-        return ICE;
+    public Long getIce() {
+        return ice;
     }
 
-    public void setICE(Long ICE) {
-        this.ICE = ICE;
+    public void setIce(Long ice) {
+        this.ice = ice;
     }
 }

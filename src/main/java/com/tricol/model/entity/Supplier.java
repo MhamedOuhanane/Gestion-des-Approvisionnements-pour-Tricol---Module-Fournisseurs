@@ -1,6 +1,6 @@
 package com.tricol.model.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
@@ -30,11 +30,11 @@ public class Supplier {
     private String city;
 
     @Column(nullable = false)
-    private Long ICE;
+    private Long ice;
 
     public Supplier() {}
 
-    public Supplier(UUID uuid, String company, String address, String contact, String email, String phone, String city, Long ICE) {
+    public Supplier(UUID uuid, String company, String address, String contact, String email, String phone, String city, Long ice) {
         this.uuid = uuid;
         this.company = company;
         this.address = address;
@@ -42,7 +42,7 @@ public class Supplier {
         this.email = email;
         this.phone = phone;
         this.city = city;
-        this.ICE = ICE;
+        this.ice = ice;
     }
 
     public UUID getUuid() {
@@ -101,11 +101,11 @@ public class Supplier {
         this.city = city;
     }
 
-    public Long getICE() {
-        return ICE;
+    public Long getIce() {
+        return ice;
     }
 
-    public void setICE(Long ICE) {
-        this.ICE = ICE;
+    public void setIce(Long ice) {
+        this.ice = ice;
     }
 }

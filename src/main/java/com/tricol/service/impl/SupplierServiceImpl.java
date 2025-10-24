@@ -44,36 +44,35 @@ public class SupplierServiceImpl implements SupplierService {
         if (dto == null) throw new IllegalArgumentException("Les informations de fournisseur ne peut pas étre vides");
         if (uuid == null) throw new IllegalArgumentException("L'identifiant de fournisseur ne peut pas étre vide");
         try {
-            Map<String, Object> supplierMap = findSupplier(uuid);
-            Supplier supplier = (Supplier) supplierMap.get("supplier");
+            Supplier supplier = supplierRepository.findById(uuid).orElseThrow(() -> new RuntimeException("Ce fournisseur n'existe pas"));
 
             boolean updated = false;
-            if (dto.getCompany() != null) {
+            if (dto.getCompany() != null && !dto.getCompany().isEmpty()) {
                 supplier.setCompany(dto.getCompany());
                 updated = true;
             }
-            if (dto.getAddress() != null) {
+            if (dto.getAddress() != null && !dto.getAddress().isEmpty()) {
                 supplier.setAddress(dto.getAddress());
                 updated = true;
             }
-            if (dto.getContact() != null) {
+            if (dto.getContact() != null && !dto.getContact().isEmpty()) {
                 supplier.setContact(dto.getContact());
                 updated = true;
             }
-            if (dto.getEmail() != null) {
+            if (dto.getEmail() != null && !dto.getEmail().isEmpty()) {
                 supplier.setEmail(dto.getEmail());
                 updated = true;
             }
-            if (dto.getPhone() != null) {
+            if (dto.getPhone() != null && !dto.getPhone().isEmpty()) {
                 supplier.setPhone(dto.getPhone());
                 updated = true;
             }
-            if (dto.getCity() != null) {
+            if (dto.getCity() != null && !dto.getCity().isEmpty()) {
                 supplier.setCity(dto.getCity());
                 updated = true;
             }
-            if (dto.getICE() != null) {
-                supplier.setICE(dto.getICE());
+            if (dto.getIce() != null) {
+                supplier.setIce(dto.getIce());
                 updated = true;
             }
 
@@ -91,7 +90,7 @@ public class SupplierServiceImpl implements SupplierService {
             List<Supplier> list = supplierRepository.findAll();
             String message = list.isEmpty() ? "Aucun fournisseur n'existe dans le système" : "Trouver tous les fournisseur exist avec succès!";
             List<SupplierDTO> dtos = list.stream().map(SupplierMapper::toDTO).toList();
-            return Map.of("messge", message, "suppliers", dtos);
+            return Map.of("message", message, "suppliers", dtos);
         } catch (RuntimeException e) {
             return Map.of("error", e.getMessage(), "suppliers", List.of());
         }
@@ -101,8 +100,7 @@ public class SupplierServiceImpl implements SupplierService {
     public Map<String, Object> deleteSupplier(UUID uuid) {
         if (uuid == null) throw new IllegalArgumentException("L'identifiant de fournisseur ne peut pas étre vide");
         try {
-            Map<String, Object> supplierMap = findSupplier(uuid);
-            Supplier supplier = (Supplier) supplierMap.get("supplier");
+            Supplier supplier = supplierRepository.findById(uuid).orElseThrow(() -> new RuntimeException("Ce fournisseur n'existe pas"));
             supplierRepository.delete(supplier);
             return Map.of("message", "Le fournisseur de mail \"" + supplier.getEmail() + "\" est supprimè avec succès!", "supplier", SupplierMapper.toDTO(supplier));
         } catch (RuntimeException e) {

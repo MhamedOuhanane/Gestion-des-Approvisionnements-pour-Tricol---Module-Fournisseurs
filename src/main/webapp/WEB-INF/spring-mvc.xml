@@ -15,8 +15,10 @@
         <property name="mappings">
             <props>
                 <prop key="/suppliers">supplierController</prop>
+                <prop key="/suppliers/*">supplierController</prop>
             </props>
         </property>
     </bean>
 
+    <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
 </beans>
