@@ -29,7 +29,7 @@ public class SupplierController implements Controller {
 
         String prefix = "/suppliers/";
         if (uri.length() > prefix.length()) {
-            path = uri.substring("/suppliers/".length());
+            path = uri.substring(prefix.length());
             id = UUID.fromString(path);
         }
 
