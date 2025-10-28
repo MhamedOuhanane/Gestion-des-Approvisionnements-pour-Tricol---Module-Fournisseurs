@@ -6,4 +6,11 @@
         http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
+    <include file="001_create_table_suppliers.xml" relativeToChangelogFile="true"/>
+    <include file="002_update_column_ice_table_suppliers.xml" relativeToChangelogFile="true"/>
+    <include file="003_create_table_orders.xml" relativeToChangelogFile="true"/>
+    <include file="004_create_table_products.xml" relativeToChangelogFile="true"/>
+    <include file="005_create_table_products_order.xml" relativeToChangelogFile="true"/>
+    <include file="006_create_table_stockMovements.xml" relativeToChangelogFile="true"/>
+    <include file="007_add_column_quantity_table_products.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

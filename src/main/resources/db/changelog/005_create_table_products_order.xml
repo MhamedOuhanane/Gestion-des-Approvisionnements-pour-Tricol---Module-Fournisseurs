@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="003" author="M'hamed">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <not>
+                    <tableExists tableName="products_order"/>
+                </not>
+                <tableExists tableName="orders"/>
+                <tableExists tableName="products"/>
+            </and>
+        </preConditions>
+
+        <createTable tableName="products_order">
+            <column name="order_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="INT" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="totalAmount" type="DECIMAL(12,4)" defaultValue="0">
+                <constraints nullable="false" checkConstraint="totalAmount >= 0"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="products_order"
+                baseColumnNames="order_id"
+                constraintName="fk_products_order_orders"
+                referencedTableName="orders"
+                referencedColumnNames="uuid"/>
+
+        <addForeignKeyConstraint
+                baseTableName="products_order"
+                baseColumnNames="product_id"
+                constraintName="fk_products_order_products"
+                referencedTableName="products"
+                referencedColumnNames="uuid"/>
+    </changeSet>
+
+</databaseChangeLog>

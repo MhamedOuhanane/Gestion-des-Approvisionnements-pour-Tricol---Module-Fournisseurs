@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="003" author="M'hamed">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="stockMovements"/>
+            </not>
+        </preConditions>
+        <sql>
+            CREATE TYPE stockMovement_type AS ENUM('ENTRANCE', 'EXIT', 'ADJUSTMENT');
+        </sql>
+
+        <createTable tableName="stockMovements">
+            <column name="uuid" type="uuid">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+            <column name="date" type="TIMESTAMP" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="INT" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="stockMovement_type" defaultValue="ENTRANCE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="stockMovements"
+                baseColumnNames="product_id"
+                constraintName="fk_stockMovements_products"
+                referencedTableName="products"
+                referencedColumnNames="uuid"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="003" author="M'hamed">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="orders"/>
+            </not>
+        </preConditions>
+        <sql>
+            CREATE TYPE order_status AS ENUM('PENDING', 'VALIDATED', 'DELIVERED', 'CANCELED');
+        </sql>
+        <createTable tableName="orders">
+            <column name="uuid" type="uuid">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+            <column name="orderDate" type="TIMESTAMP" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="order_status" defaultValue="PENDING">
+                <constraints nullable="false"/>
+            </column>
+            <column name="totalAmount" type="DECIMAL(12,2)" defaultValue="0">
+                <constraints nullable="false" checkConstraint="totalAmount >= 0"/>
+            </column>
+            <column name="supplier_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <addForeignKeyConstraint
+                baseTableName="orders"
+                baseColumnNames="supplier_id"
+                constraintName="fk_orders_supplier"
+                referencedTableName="suppliers"
+                referencedColumnNames="uuid"/>
+    </changeSet>
+</databaseChangeLog>
