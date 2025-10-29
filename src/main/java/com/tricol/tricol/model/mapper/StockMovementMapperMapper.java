@@ -1,4 +1,4 @@
 package com.tricol.tricol.model.mapper;
 
-public class StockMovementMapperMapper {
+public interface StockMovementMapperMapper {
 }

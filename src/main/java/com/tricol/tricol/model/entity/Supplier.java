@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -11,6 +12,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Supplier extends Auditable {
     @Id
     @GeneratedValue
@@ -38,4 +40,6 @@ public class Supplier extends Auditable {
     @Column(nullable = false)
     private String ice;
 
+    @OneToMany(mappedBy = "orders", cascade = CascadeType.DETACH)
+    private List<Order> orders;
 }

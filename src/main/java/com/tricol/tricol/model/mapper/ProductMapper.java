@@ -1,4 +1,4 @@
 package com.tricol.tricol.model.mapper;
 
-public class ProductMapper {
+public interface ProductMapper {
 }

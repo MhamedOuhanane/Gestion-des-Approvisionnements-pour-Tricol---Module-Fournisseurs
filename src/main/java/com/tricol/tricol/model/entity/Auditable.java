@@ -1,12 +1,14 @@
 package com.tricol.tricol.model.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @MappedSuperclass
 @Getter
+@Builder
 public abstract class Auditable {
     @Column(name = "created_at", nullable = false)
     protected LocalDateTime createdAt;

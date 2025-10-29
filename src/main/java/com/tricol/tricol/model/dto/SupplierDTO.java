@@ -9,6 +9,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class SupplierDTO {
     private UUID uuid;
     private String company;
