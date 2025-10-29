@@ -11,7 +11,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Supplier {
+public class Supplier extends Auditable {
     @Id
     @GeneratedValue
     @Column(columnDefinition = "uuid", updatable = false, unique = true, nullable = false)
@@ -38,20 +38,4 @@ public class Supplier {
     @Column(nullable = false)
     private String ice;
 
-    @Column(nullable = false)
-    private LocalDateTime created_at;
-
-    @Column(nullable = false)
-    private LocalDateTime updated_at;
-
-    @PrePersist
-    public void prePersist() {
-        this.created_at = LocalDateTime.now();
-        this.updated_at = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updated_at = LocalDateTime.now();
-    }
 }

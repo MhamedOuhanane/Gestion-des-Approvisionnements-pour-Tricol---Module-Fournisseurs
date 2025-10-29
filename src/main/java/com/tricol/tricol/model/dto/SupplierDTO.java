@@ -3,6 +3,7 @@ package com.tricol.tricol.model.dto;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -17,4 +18,6 @@ public class SupplierDTO {
     private String phone;
     private String city;
     private String ice;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
