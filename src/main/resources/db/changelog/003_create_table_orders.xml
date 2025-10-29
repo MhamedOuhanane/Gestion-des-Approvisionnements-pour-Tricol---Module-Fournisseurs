@@ -37,6 +37,7 @@
                 baseColumnNames="supplier_id"
                 constraintName="fk_orders_supplier"
                 referencedTableName="suppliers"
-                referencedColumnNames="uuid"/>
+                referencedColumnNames="uuid"
+                onDelete="CASCADE"/>
     </changeSet>
 </databaseChangeLog>

@@ -37,14 +37,16 @@
                 baseColumnNames="order_id"
                 constraintName="fk_products_order_orders"
                 referencedTableName="orders"
-                referencedColumnNames="uuid"/>
+                referencedColumnNames="uuid"
+                onDelete="CASCADE"/>
 
         <addForeignKeyConstraint
                 baseTableName="products_order"
                 baseColumnNames="product_id"
                 constraintName="fk_products_order_products"
                 referencedTableName="products"
-                referencedColumnNames="uuid"/>
+                referencedColumnNames="uuid"
+                onDelete="CASCADE"/>
     </changeSet>
 
 </databaseChangeLog>

@@ -38,7 +38,8 @@
                 baseColumnNames="product_id"
                 constraintName="fk_stockMovements_products"
                 referencedTableName="products"
-                referencedColumnNames="uuid"/>
+                referencedColumnNames="uuid"
+                onDelete="CASCADE"/>
     </changeSet>
 
 </databaseChangeLog>
