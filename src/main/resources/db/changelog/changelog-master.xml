@@ -13,4 +13,8 @@
     <include file="005_create_table_products_order.xml" relativeToChangelogFile="true"/>
     <include file="006_create_table_stockMovements.xml" relativeToChangelogFile="true"/>
     <include file="007_add_column_quantity_table_products.xml" relativeToChangelogFile="true"/>
+    <include file="008_add_columns_updated_at_created_at_table_products.xml" relativeToChangelogFile="true"/>
+    <include file="009_add_columns_updated_at_created_at_table_suppliers.xml" relativeToChangelogFile="true"/>
+    <include file="010_add_columns_updated_at_created_at_table_orders.xml" relativeToChangelogFile="true"/>
+    <include file="011_add_columns_updated_at_created_at_table_stockMovements.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
