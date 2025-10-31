@@ -17,4 +17,5 @@
     <include file="db/changelog/009_add_columns_updated_at_created_at_table_suppliers.xml"/>
     <include file="db/changelog/010_add_columns_updated_at_created_at_table_orders.xml"/>
     <include file="db/changelog/011_add_columns_updated_at_created_at_table_stock_movements.xml"/>
+    <include file="db/changelog/012_insert_data_table_suppliers.xml"/>
 </databaseChangeLog>

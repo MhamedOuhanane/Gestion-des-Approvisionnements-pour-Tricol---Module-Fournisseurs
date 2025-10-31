@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+      http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="011" author="M'hamed">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="suppliers"/>
+        </preConditions>
+
+        <!-- 20 suppliers -->
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Atlas Tech"/>
+            <column name="address" value="12 Rue Ibn Sina, Casablanca"/>
+            <column name="contact" value="Ahmed El Idrissi"/>
+            <column name="email" value="contact@atlastech.ma"/>
+            <column name="phone" value="+212600112233"/>
+            <column name="city" value="Casablanca"/>
+            <column name="ice" value="MA123456789"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Maroc Plast"/>
+            <column name="address" value="Zone industrielle, Tanger"/>
+            <column name="contact" value="Salma Bouzid"/>
+            <column name="email" value="info@marocplast.ma"/>
+            <column name="phone" value="+212601223344"/>
+            <column name="city" value="Tanger"/>
+            <column name="ice" value="MA987654321"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Sahara Foods"/>
+            <column name="address" value="Avenue Mohammed V, Marrakech"/>
+            <column name="contact" value="Karim Benali"/>
+            <column name="email" value="contact@saharafoods.ma"/>
+            <column name="phone" value="+212602334455"/>
+            <column name="city" value="Marrakech"/>
+            <column name="ice" value="MA456789123"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Casablanca Electronics"/>
+            <column name="address" value="Boulevard Hassan II, Casablanca"/>
+            <column name="contact" value="Fatima Zahra"/>
+            <column name="email" value="support@casaelectro.ma"/>
+            <column name="phone" value="+212603445566"/>
+            <column name="city" value="Casablanca"/>
+            <column name="ice" value="MA321654987"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Rabat Textiles"/>
+            <column name="address" value="Rue de l''Industrie, Rabat"/>
+            <column name="contact" value="Hassan Ouahbi"/>
+            <column name="email" value="contact@rabtextiles.ma"/>
+            <column name="phone" value="+212604556677"/>
+            <column name="city" value="Rabat"/>
+            <column name="ice" value="MA159753486"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Agadir Agro"/>
+            <column name="address" value="Zone agricole, Agadir"/>
+            <column name="contact" value="Meryem Charki"/>
+            <column name="email" value="info@agadiragro.ma"/>
+            <column name="phone" value="+212605667788"/>
+            <column name="city" value="Agadir"/>
+            <column name="ice" value="MA753951486"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Fes Pharma"/>
+            <column name="address" value="Avenue des Pharmaciens, Fes"/>
+            <column name="contact" value="Driss El Fassi"/>
+            <column name="email" value="contact@fespharma.ma"/>
+            <column name="phone" value="+212606778899"/>
+            <column name="city" value="Fes"/>
+            <column name="ice" value="MA951357486"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Tangier Logistics"/>
+            <column name="address" value="Port de Tanger, Tanger"/>
+            <column name="contact" value="Najat Loukili"/>
+            <column name="email" value="logistics@tangerlog.ma"/>
+            <column name="phone" value="+212607889900"/>
+            <column name="city" value="Tanger"/>
+            <column name="ice" value="MA852741963"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Meknes Furniture"/>
+            <column name="address" value="Rue Artisanale, Meknes"/>
+            <column name="contact" value="Said Belkadi"/>
+            <column name="email" value="info@meknesfurn.ma"/>
+            <column name="phone" value="+212608990011"/>
+            <column name="city" value="Meknes"/>
+            <column name="ice" value="MA963852741"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Oujda Steel"/>
+            <column name="address" value="Zone industrielle, Oujda"/>
+            <column name="contact" value="Samira Farah"/>
+            <column name="email" value="contact@oujdasteel.ma"/>
+            <column name="phone" value="+212609001122"/>
+            <column name="city" value="Oujda"/>
+            <column name="ice" value="MA147258369"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Kenitra Paper"/>
+            <column name="address" value="Boulevard Industriel, Kenitra"/>
+            <column name="contact" value="Youssef El Amrani"/>
+            <column name="email" value="info@kenitrapaper.ma"/>
+            <column name="phone" value="+212610112233"/>
+            <column name="city" value="Kenitra"/>
+            <column name="ice" value="MA369258147"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Tetouan Textiles"/>
+            <column name="address" value="Rue du Commerce, Tetouan"/>
+            <column name="contact" value="Imane Zayani"/>
+            <column name="email" value="contact@tetouantextiles.ma"/>
+            <column name="phone" value="+212611223344"/>
+            <column name="city" value="Tetouan"/>
+            <column name="ice" value="MA258147369"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Nador Seafood"/>
+            <column name="address" value="Port de Nador, Nador"/>
+            <column name="contact" value="Hamid Chraibi"/>
+            <column name="email" value="info@nadorseafood.ma"/>
+            <column name="phone" value="+212612334455"/>
+            <column name="city" value="Nador"/>
+            <column name="ice" value="MA147963258"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Safi Cement"/>
+            <column name="address" value="Zone industrielle, Safi"/>
+            <column name="contact" value="Fatima Khattabi"/>
+            <column name="email" value="contact@saficement.ma"/>
+            <column name="phone" value="+212613445566"/>
+            <column name="city" value="Safi"/>
+            <column name="ice" value="MA369147258"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Essaouira Arts"/>
+            <column name="address" value="Avenue Hassan II, Essaouira"/>
+            <column name="contact" value="Yassine Elmouden"/>
+            <column name="email" value="info@essaouiraarts.ma"/>
+            <column name="phone" value="+212614556677"/>
+            <column name="city" value="Essaouira"/>
+            <column name="ice" value="MA741258963"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Ouarzazate Solar"/>
+            <column name="address" value="Route du Sud, Ouarzazate"/>
+            <column name="contact" value="Leila Bahri"/>
+            <column name="email" value="contact@ouarzazatesolar.ma"/>
+            <column name="phone" value="+212615667788"/>
+            <column name="city" value="Ouarzazate"/>
+            <column name="ice" value="MA963147258"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Ifrane Labs"/>
+            <column name="address" value="Rue des Sciences, Ifrane"/>
+            <column name="contact" value="Mohammed Tazi"/>
+            <column name="email" value="info@ifranelabs.ma"/>
+            <column name="phone" value="+212616778899"/>
+            <column name="city" value="Ifrane"/>
+            <column name="ice" value="MA852963741"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Dakhla Fisheries"/>
+            <column name="address" value="Port de Dakhla, Dakhla"/>
+            <column name="contact" value="Salma El Amrani"/>
+            <column name="email" value="contact@dakhlafish.ma"/>
+            <column name="phone" value="+212617889900"/>
+            <column name="city" value="Dakhla"/>
+            <column name="ice" value="MA741369258"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Oujda Agro"/>
+            <column name="address" value="Route de l''Agriculture, Oujda"/>
+            <column name="contact" value="Rachid Bennis"/>
+            <column name="email" value="info@oujdaagro.ma"/>
+            <column name="phone" value="+212618990011"/>
+            <column name="city" value="Oujda"/>
+            <column name="ice" value="MA963258741"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+        <insert tableName="suppliers">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="company" value="Casablanca Packaging"/>
+            <column name="address" value="Boulevard des Industries, Casablanca"/>
+            <column name="contact" value="Laila Benkirane"/>
+            <column name="email" value="contact@casa-packaging.ma"/>
+            <column name="phone" value="+212619001122"/>
+            <column name="city" value="Casablanca"/>
+            <column name="ice" value="MA258963147"/>
+            <column name="created_at" valueDate="2025-10-31T09:00:00"/>
+            <column name="updated_at" valueDate="2025-10-31T09:00:00"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>
+

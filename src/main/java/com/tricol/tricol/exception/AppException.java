@@ -2,6 +2,8 @@ package com.tricol.tricol.exception;
 
 import org.springframework.http.HttpStatus;
 
+import java.util.Map;
+
 public class AppException extends RuntimeException {
     private final HttpStatus status;
     private final Object data;
@@ -9,7 +11,7 @@ public class AppException extends RuntimeException {
     public AppException(String message, HttpStatus status) {
         super(message);
         this.status = status;
-        this.data = null;
+        this.data = Map.of();
     }
 
     public AppException(String message, HttpStatus status, Object data) {

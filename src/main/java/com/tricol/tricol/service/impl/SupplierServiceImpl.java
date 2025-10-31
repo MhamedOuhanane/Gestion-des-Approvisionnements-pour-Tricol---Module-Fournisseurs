@@ -64,23 +64,31 @@ public class SupplierServiceImpl implements SupplierService {
         String company = (String) map.getOrDefault("company", "");
         String contact = (String) map.getOrDefault("contact", "");
         Page<Supplier> suppliers = suppliers = supplierRepository.findByCityContainingAndContactContainingAndCompanyContaining(city, contact, company, pageable);
-
         String message;
         Object data;
         if (suppliers.isEmpty()) {
             message = "Aucun fournisseur n'existe dans le système";
+            data = List.of();
+        } else {
+            message = "Tous les fournisseurs trouvés avec succès";
             data = suppliers.stream()
                     .map(supplierMapper::toDto)
                     .toList();
-        } else {
-            message = "Tous les fournisseurs trouvés avec succès";
-            data = List.of();
         }
+        Map<String, Object> pagination = Map.of(
+                "page", suppliers.getNumber(),
+                "size", suppliers.getSize(),
+                "totalElements", suppliers.getTotalElements(),
+                "totalPages", suppliers.getTotalPages(),
+                "isFirst", suppliers.isFirst(),
+                "isLast", suppliers.isLast()
+        );
 
         return Map.of(
                 "message", message,
                 "status", 200,
-                "data", data
+                "data", data,
+                "pagination", pagination
         );
     }
 
@@ -103,7 +111,7 @@ public class SupplierServiceImpl implements SupplierService {
         supplier.setIce(dto.getIce());
         supplier.setCity(dto.getCity());
         supplier.setAddress(dto.getAddress());
-        supplier = supplierRepository.save(supplierMapper.toEntity(dto));
+        supplier = supplierRepository.save(supplier);
         return Map.of(
                 "message", "Le fournisseur '" + supplier.getEmail() + "' a été mis à jour avec succès !",
                 "status", 200,
@@ -118,14 +126,14 @@ public class SupplierServiceImpl implements SupplierService {
                 .orElseThrow(() -> new AppException("Aucun fournisseur trouvé avec cet identifiant", HttpStatus.NOT_FOUND));
         supplierRepository.delete(supplier);
         boolean deleted = supplierRepository.findById(uuid).isPresent();
-        String message = deleted
+        String message = !deleted
                 ? "Le fournisseur a été supprimé avec succès."
                 : "Échec de la suppression du fournisseur.";
         int status = deleted ? 200 : 500;
         return Map.of(
                 "message", message,
                 "status", status,
-                "data", deleted ? Optional.empty() : supplierMapper.toDto(supplier)
+                "data", !deleted ? Optional.empty() : supplierMapper.toDto(supplier)
         );
     }
 
