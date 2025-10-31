@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -46,8 +47,8 @@ public class Supplier extends Auditable {
     @Column(nullable = false)
     private String ice;
 
-//    @OneToMany(mappedBy = "orders", cascade = CascadeType.DETACH)
-//    private List<Order> orders;
+    @OneToMany(mappedBy = "orders", cascade = CascadeType.DETACH)
+    private List<Order> orders;
 
     public Supplier() {}
 
@@ -124,5 +125,13 @@ public class Supplier extends Auditable {
 
     public void setIce(String ice) {
         this.ice = ice;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 }
