@@ -25,7 +25,7 @@ public class Order extends Auditable {
     @Column(nullable = false)
     private Double totalAmount;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
 
