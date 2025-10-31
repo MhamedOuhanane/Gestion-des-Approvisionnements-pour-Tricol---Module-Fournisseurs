@@ -1,6 +1,9 @@
 package com.tricol.tricol.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 import java.util.UUID;
 
@@ -12,24 +15,34 @@ public class Supplier extends Auditable {
     @Column(columnDefinition = "uuid", updatable = false, unique = true, nullable = false)
     private UUID uuid;
 
+    @NotBlank(message = "la societe est obligatoire")
     @Column(nullable = false)
     private String company;
 
+    @NotBlank(message = "l'adresse est obligatoire")
     @Column(nullable = false)
     private String address;
 
+    @NotBlank(message = "le contact est obligatoire")
     @Column(nullable = false)
     private String contact;
 
+    @NotBlank(message = "Adresse e-mail est obligatoire")
+    @Email(message = "Adresse e-mail invalide")
     @Column(nullable = false, unique = true)
     private String email;
 
+    @NotBlank(message = "Le numéro de téléphone est Oblegatoire")
+    @Pattern(regexp = "^\\+212\\d{9}$", message = "Le numéro de téléphone doit commencer par +212 et contenir exactement 9 chiffres après")
     @Column(nullable = false)
     private String phone;
 
+    @NotBlank(message = "la ville est obligatoire")
     @Column(nullable = false)
     private String city;
 
+    @NotBlank(message = "le code ICE est obligatoire")
+    @Pattern(regexp ="\\d{15}", message = "Le code ICE doit contenir exactement 15 chiffres")
     @Column(nullable = false)
     private String ice;
 

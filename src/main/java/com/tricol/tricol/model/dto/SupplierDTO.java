@@ -1,17 +1,39 @@
 package com.tricol.tricol.model.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class SupplierDTO {
     private UUID uuid;
+
+    @NotBlank(message = "la societe est obligatoire")
     private String company;
+
+    @NotBlank(message = "l'adresse est obligatoire")
     private String address;
+
+    @NotBlank(message = "le contact est obligatoire")
     private String contact;
+
+    @NotBlank(message = "Adresse e-mail est obligatoire")
+    @Email(message = "Adresse e-mail invalide")
     private String email;
+
+    @NotBlank(message = "Le numéro de téléphone est Oblegatoire")
+    @Pattern(regexp = "^\\+212\\d{9}$", message = "Le numéro de téléphone doit commencer par +212 et contenir exactement 9 chiffres après")
     private String phone;
+
+    @NotBlank(message = "la ville est obligatoire")
     private String city;
+
+    @NotBlank(message = "le code ICE est obligatoire")
+    @Pattern(regexp ="\\d{15}", message = "Le code ICE doit contenir exactement 15 chiffres")
     private String ice;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

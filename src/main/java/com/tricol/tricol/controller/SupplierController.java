@@ -2,6 +2,7 @@ package com.tricol.tricol.controller;
 
 import com.tricol.tricol.model.dto.SupplierDTO;
 import com.tricol.tricol.service.interfaces.SupplierService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ public class SupplierController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> create(@RequestBody SupplierDTO dto) {
+    public ResponseEntity<Map<String, Object>> create(@Valid @RequestBody SupplierDTO dto) {
         Map<String, Object> result = supplierService.create(dto);
         return ResponseEntity.status((int) result.getOrDefault("status", 200)).body(result);
     }
@@ -53,7 +54,7 @@ public class SupplierController {
     @PutMapping("/{uuid}")
     public ResponseEntity<Map<String, Object>> update(
             @PathVariable UUID uuid,
-            @RequestBody SupplierDTO dto
+            @Valid @RequestBody SupplierDTO dto
     ) {
         Map<String, Object> result = supplierService.update(uuid, dto);
         return ResponseEntity.status((int) result.getOrDefault("status", 200)).body(result);
