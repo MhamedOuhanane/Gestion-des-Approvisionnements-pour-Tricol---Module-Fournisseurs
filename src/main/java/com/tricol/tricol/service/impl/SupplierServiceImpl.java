@@ -5,18 +5,19 @@ import com.tricol.tricol.model.dto.SupplierDTO;
 import com.tricol.tricol.model.entity.Supplier;
 import com.tricol.tricol.model.mapper.SupplierMapper;
 import com.tricol.tricol.repository.SupplierRepository;
-import com.tricol.tricol.service.interfaces.Service;
 import com.tricol.tricol.service.interfaces.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-public class SupplierServiceImpl implements Service<SupplierDTO>, SupplierService {
+@Service
+public class SupplierServiceImpl implements SupplierService {
     private final SupplierRepository supplierRepository;
     private final SupplierMapper supplierMapper;
 

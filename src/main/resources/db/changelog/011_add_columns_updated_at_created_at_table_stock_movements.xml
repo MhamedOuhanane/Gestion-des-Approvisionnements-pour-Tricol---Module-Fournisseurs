@@ -7,7 +7,13 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     
     <changeSet id="011" author="M'hamed">
-        <addColumn tableName="stockMovements">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="stock_movements"/>
+            </and>
+        </preConditions>
+
+        <addColumn tableName="stock_movements">
             <column name="created_at" type="TIMESTAMP" defaultValueComputed="now()">
                 <constraints nullable="false"/>
             </column>

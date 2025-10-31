@@ -12,6 +12,7 @@
                 <tableExists tableName="suppliers"/>
             </not>
         </preConditions>
+
         <createTable tableName="suppliers">
             <column name="uuid" type="uuid">
                 <constraints primaryKey="true" nullable="false"/>

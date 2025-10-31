@@ -6,17 +6,17 @@
         http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="003" author="M'hamed">
+    <changeSet id="006" author="M'hamed">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="stockMovements"/>
+                <tableExists tableName="stock_movements"/>
             </not>
         </preConditions>
         <sql>
             CREATE TYPE stockMovement_type AS ENUM('ENTRANCE', 'EXIT', 'ADJUSTMENT');
         </sql>
 
-        <createTable tableName="stockMovements">
+        <createTable tableName="stock_movements">
             <column name="uuid" type="uuid">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
@@ -34,9 +34,9 @@
             </column>
         </createTable>
         <addForeignKeyConstraint
-                baseTableName="stockMovements"
+                baseTableName="stock_movements"
                 baseColumnNames="product_id"
-                constraintName="fk_stockMovements_products"
+                constraintName="fk_stock_movements_products"
                 referencedTableName="products"
                 referencedColumnNames="uuid"
                 onDelete="CASCADE"/>

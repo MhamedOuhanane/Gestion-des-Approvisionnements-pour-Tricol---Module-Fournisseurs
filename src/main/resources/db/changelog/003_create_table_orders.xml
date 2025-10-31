@@ -11,6 +11,7 @@
                 <tableExists tableName="orders"/>
             </not>
         </preConditions>
+
         <sql>
             CREATE TYPE order_status AS ENUM('PENDING', 'VALIDATED', 'DELIVERED', 'CANCELED');
         </sql>

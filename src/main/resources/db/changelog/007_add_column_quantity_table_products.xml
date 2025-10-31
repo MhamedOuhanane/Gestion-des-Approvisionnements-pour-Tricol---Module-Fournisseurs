@@ -7,6 +7,12 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     
     <changeSet id="007" author="M'hamed">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="products" columnName="quantity"/>
+            </not>
+        </preConditions>
+
         <addColumn tableName="products">
             <column name="quantity" type="INT" defaultValue="0">
                 <constraints nullable="false"/>

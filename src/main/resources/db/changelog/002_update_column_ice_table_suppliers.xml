@@ -7,6 +7,12 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     
     <changeSet id="002" author="M'hamed">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="suppliers"/>
+            </and>
+        </preConditions>
+
         <modifyDataType tableName="suppliers" columnName="ice" newDataType="varchar(15)"/>
     </changeSet>
 
