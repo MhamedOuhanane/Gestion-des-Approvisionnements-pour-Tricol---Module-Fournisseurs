@@ -5,6 +5,7 @@ import com.tricol.tricol.model.enums.OrderStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -28,6 +29,9 @@ public class Order extends Auditable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<ProductsOrder> productsOrders;
 
     public Order() {}
 
@@ -76,5 +80,13 @@ public class Order extends Auditable {
 
     public void setSupplier(Supplier supplier) {
         this.supplier = supplier;
+    }
+
+    public List<ProductsOrder> getProductsOrders() {
+        return productsOrders;
+    }
+
+    public void setProductsOrders(List<ProductsOrder> productsOrders) {
+        this.productsOrders = productsOrders;
     }
 }

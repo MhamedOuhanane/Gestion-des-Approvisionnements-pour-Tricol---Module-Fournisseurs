@@ -13,7 +13,7 @@
             </not>
         </preConditions>
         <sql>
-            CREATE TYPE stockMovement_type AS ENUM('ENTRANCE', 'EXIT', 'ADJUSTMENT');
+            CREATE TYPE stock_movements_type AS ENUM('ENTRANCE', 'EXIT', 'ADJUSTMENT');
         </sql>
 
         <createTable tableName="stock_movements">
@@ -26,7 +26,7 @@
             <column name="quantity" type="INT" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
-            <column name="type" type="stockMovement_type" defaultValue="ENTRANCE">
+            <column name="type" type="stock_movements_type" defaultValue="ENTRANCE">
                 <constraints nullable="false"/>
             </column>
             <column name="product_id" type="uuid">

@@ -32,6 +32,11 @@
             </column>
         </createTable>
 
+        <addPrimaryKey
+                tableName="products_order"
+                columnNames="order_id, product_id"
+                constraintName="pk_products_order"/>
+
         <addForeignKeyConstraint
                 baseTableName="products_order"
                 baseColumnNames="order_id"

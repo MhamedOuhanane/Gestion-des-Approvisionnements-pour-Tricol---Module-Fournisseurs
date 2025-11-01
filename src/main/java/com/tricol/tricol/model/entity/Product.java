@@ -27,8 +27,11 @@ public class Product {
     @Column(nullable = false)
     private Integer quantity;
 
-    @OneToMany(mappedBy = "products", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.DETACH)
     private List<StockMovement> stockMovements;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.DETACH)
+    private List<ProductsOrder> productsOrders;
 
     public Product() {};
     public Product(UUID uuid, String name, String category, String description, Double unitPrice, Integer quantity) {
@@ -86,5 +89,21 @@ public class Product {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public List<StockMovement> getStockMovements() {
+        return stockMovements;
+    }
+
+    public void setStockMovements(List<StockMovement> stockMovements) {
+        this.stockMovements = stockMovements;
+    }
+
+    public List<ProductsOrder> getProductsOrders() {
+        return productsOrders;
+    }
+
+    public void setProductsOrders(List<ProductsOrder> productsOrders) {
+        this.productsOrders = productsOrders;
     }
 }
