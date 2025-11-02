@@ -28,10 +28,10 @@ public class Product {
     private Integer quantity;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.DETACH)
-    private List<StockMovement> stockMovements;
+    private List<StockMovement> stockMovements = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.DETACH)
-    private List<ProductsOrder> productsOrders;
+    private List<ProductsOrder> productsOrders = new ArrayList<>();
 
     public Product() {};
     public Product(UUID uuid, String name, String category, String description, Double unitPrice, Integer quantity) {

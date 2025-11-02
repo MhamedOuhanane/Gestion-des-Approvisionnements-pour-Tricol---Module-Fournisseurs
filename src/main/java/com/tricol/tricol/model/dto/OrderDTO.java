@@ -1,7 +1,5 @@
 package com.tricol.tricol.model.dto;
 
-import com.tricol.tricol.model.entity.ProductsOrder;
-import com.tricol.tricol.model.entity.Supplier;
 import com.tricol.tricol.model.enums.OrderStatus;
 
 import java.time.LocalDateTime;
@@ -13,20 +11,24 @@ public class OrderDTO {
     private LocalDateTime orderDate;
     private OrderStatus status;
     private Double totalAmount;
-    private Supplier supplier;
-    private List<ProductsOrder>  productsOrders;
+    private UUID supplierId;
+    private String supplierContact;
+    private List<ProductsOrderDTO>  productsOrders;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public OrderDTO() {}
 
-    public OrderDTO(UUID uuid, LocalDateTime orderDate, OrderStatus status, Double totalAmount, Supplier supplier, List<ProductsOrder> productsOrders) {
+    public OrderDTO(UUID uuid, LocalDateTime orderDate, OrderStatus status, Double totalAmount, UUID supplierId, String supplierContact, List<ProductsOrderDTO> productsOrders, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.uuid = uuid;
         this.orderDate = orderDate;
         this.status = status;
         this.totalAmount = totalAmount;
-        this.supplier = supplier;
+        this.supplierId = supplierId;
+        this.supplierContact = supplierContact;
         this.productsOrders = productsOrders;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public UUID getUuid() {
@@ -61,20 +63,36 @@ public class OrderDTO {
         this.totalAmount = totalAmount;
     }
 
-    public Supplier getSupplier() {
-        return supplier;
+    public UUID getSupplierId() {
+        return supplierId;
     }
 
-    public void setSupplier(Supplier supplier) {
-        this.supplier = supplier;
+    public void setSupplierId(UUID supplierId) {
+        this.supplierId = supplierId;
     }
 
-    public List<ProductsOrder> getProductsOrders() {
+    public String setSupplierContact() {
+        return supplierContact;
+    }
+
+    public void setSupplierContact(String supplierContact) {
+        this.supplierContact = supplierContact;
+    }
+
+    public List<ProductsOrderDTO> getProductsOrders() {
         return productsOrders;
     }
 
-    public void setProductsOrders(List<ProductsOrder> productsOrders) {
+    public void setProductsOrders(List<ProductsOrderDTO> productsOrders) {
         this.productsOrders = productsOrders;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public LocalDateTime getUpdatedAt() {

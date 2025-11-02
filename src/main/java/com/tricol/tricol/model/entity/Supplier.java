@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,7 +49,7 @@ public class Supplier extends Auditable {
     private String ice;
 
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.DETACH)
-    private List<Order> orders;
+    private List<Order> orders = new ArrayList<>();
 
     public Supplier() {}
 

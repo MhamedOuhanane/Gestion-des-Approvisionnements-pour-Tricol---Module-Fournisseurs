@@ -1,6 +1,5 @@
 package com.tricol.tricol.model.dto;
 
-import com.tricol.tricol.model.entity.Product;
 import com.tricol.tricol.model.enums.StockMovementType;
 
 import java.time.LocalDateTime;
@@ -11,18 +10,22 @@ public class StockMovementDTO {
     private LocalDateTime date;
     private Integer quantity;
     private StockMovementType type;
-    private Product product;
+    private UUID productId;
+    private String productName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public StockMovementDTO() {}
 
-    public StockMovementDTO(UUID uuid, LocalDateTime date, Integer quantity, StockMovementType type, Product product) {
+    public StockMovementDTO(UUID uuid, LocalDateTime date, Integer quantity, StockMovementType type, UUID productId, String productName, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.uuid = uuid;
         this.date = date;
         this.quantity = quantity;
         this.type = type;
-        this.product = product;
+        this.productId = productId;
+        this.productName = productName;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public UUID getUuid() {
@@ -57,12 +60,28 @@ public class StockMovementDTO {
         this.type = type;
     }
 
-    public Product getProduct() {
-        return product;
+    public UUID getProductId() {
+        return productId;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductId(UUID productId) {
+        this.productId = productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public LocalDateTime getUpdatedAt() {

@@ -1,10 +1,6 @@
 package com.tricol.tricol.model.dto;
 
-import com.tricol.tricol.model.entity.ProductsOrder;
-import com.tricol.tricol.model.entity.StockMovement;
-
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 public class ProductDTO {
@@ -14,22 +10,18 @@ public class ProductDTO {
     private String description;
     private Double unitPrice;
     private Integer quantity;
-    private List<StockMovement> stockMovements;
-    private List<ProductsOrder> productsOrders;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public ProductDTO() {}
 
-    public ProductDTO(UUID uuid, String name, String category, String description, Double unitPrice, Integer quantity, List<StockMovement> stockMovements, List<ProductsOrder> productsOrders) {
+    public ProductDTO(UUID uuid, String name, String category, String description, Double unitPrice, Integer quantity) {
         this.uuid = uuid;
         this.name = name;
         this.category = category;
         this.description = description;
         this.unitPrice = unitPrice;
         this.quantity = quantity;
-        this.stockMovements = stockMovements;
-        this.productsOrders = productsOrders;
     }
 
     public UUID getUuid() {
@@ -80,20 +72,12 @@ public class ProductDTO {
         this.quantity = quantity;
     }
 
-    public List<StockMovement> getStockMovements() {
-        return stockMovements;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setStockMovements(List<StockMovement> stockMovements) {
-        this.stockMovements = stockMovements;
-    }
-
-    public List<ProductsOrder> getProductsOrders() {
-        return productsOrders;
-    }
-
-    public void setProductsOrders(List<ProductsOrder> productsOrders) {
-        this.productsOrders = productsOrders;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public LocalDateTime getUpdatedAt() {
