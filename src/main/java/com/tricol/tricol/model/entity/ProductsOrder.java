@@ -10,6 +10,12 @@ public class ProductsOrder extends Auditable {
     @EmbeddedId
     private ProductsOrderId uuid = new ProductsOrderId();
 
+    @Column(nullable = false)
+    private Integer quantity;
+
+    @Column(nullable = false)
+    private Double amount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("productId")
     @JoinColumn(name = "product_id")
@@ -50,5 +56,21 @@ public class ProductsOrder extends Auditable {
 
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
 }

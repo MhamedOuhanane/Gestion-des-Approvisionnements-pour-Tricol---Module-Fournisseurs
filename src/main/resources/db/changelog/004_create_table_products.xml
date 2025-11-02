@@ -27,7 +27,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="unitPrice" type="DECIMAL(12,4)" defaultValue="0">
-                <constraints nullable="false" checkConstraint="totalAmount >= 0"/>
+                <constraints nullable="false" checkConstraint="unitPrice >= 0"/>
             </column>
         </createTable>
     </changeSet>
