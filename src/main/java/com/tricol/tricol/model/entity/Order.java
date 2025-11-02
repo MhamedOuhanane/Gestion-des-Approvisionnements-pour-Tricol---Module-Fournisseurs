@@ -1,8 +1,8 @@
 package com.tricol.tricol.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tricol.tricol.model.enums.OrderStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,20 +17,26 @@ public class Order extends Auditable {
     @Column(columnDefinition = "uuid", nullable = false, updatable = false, unique = true)
     private UUID uuid;
 
+    @NotNull(message = "La date de commande est obligatoire")
     @Column(nullable = false)
     private LocalDateTime orderDate;
 
+    @NotNull(message = "Le statut de la commande est obligatoire")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status;
 
+    @NotNull(message = "Le montant total est obligatoire")
+    @Positive(message = "Le montant total doit être positif")
     @Column(nullable = false)
     private Double totalAmount;
 
+    @NotNull(message = "Le fournisseur est obligatoire")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
 
+    @NotNull(message = "La liste des produits est obligatoire")
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductsOrder> productsOrders = new ArrayList<>();
 

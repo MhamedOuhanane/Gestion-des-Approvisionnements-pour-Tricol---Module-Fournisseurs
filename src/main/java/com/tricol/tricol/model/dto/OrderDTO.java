@@ -1,6 +1,8 @@
 package com.tricol.tricol.model.dto;
 
 import com.tricol.tricol.model.enums.OrderStatus;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,9 +13,16 @@ public class OrderDTO {
     private LocalDateTime orderDate;
     private OrderStatus status;
     private Double totalAmount;
+
+    @NotNull(message = "Le fournisseur est obligatoire")
     private UUID supplierId;
+
+
     private String supplierContact;
+
+    @NotNull(message = "La liste des produits est obligatoire")
     private List<ProductsOrderDTO>  productsOrders;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -71,7 +80,7 @@ public class OrderDTO {
         this.supplierId = supplierId;
     }
 
-    public String setSupplierContact() {
+    public String getSupplierContact() {
         return supplierContact;
     }
 

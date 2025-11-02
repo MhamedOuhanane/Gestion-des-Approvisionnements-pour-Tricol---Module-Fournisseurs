@@ -1,15 +1,31 @@
 package com.tricol.tricol.model.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class ProductDTO {
     private UUID uuid;
+
+    @NotBlank(message = "le nom du produit est obligatoire")
     private String name;
+
+    @NotBlank(message = "La catégorie du produit est obligatoire")
     private String category;
+
+    @NotBlank(message = "la description du produit est obligatoire")
     private String description;
+
+    @NotNull(message = "le prix du produit est obligatoire")
+    @Positive(message = "le prix doit être positif")
     private Double unitPrice;
+
+    @Positive(message = "la quantité doit être positive")
     private Integer quantity;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

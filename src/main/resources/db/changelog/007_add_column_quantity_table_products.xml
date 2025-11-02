@@ -15,7 +15,7 @@
 
         <addColumn tableName="products">
             <column name="quantity" type="INT" defaultValue="0">
-                <constraints nullable="false"/>
+                <constraints nullable="false" checkConstraint="quantity >= 0"/>
             </column>
         </addColumn>
     </changeSet>

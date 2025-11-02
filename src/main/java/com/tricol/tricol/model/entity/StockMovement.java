@@ -2,6 +2,8 @@ package com.tricol.tricol.model.entity;
 
 import com.tricol.tricol.model.enums.StockMovementType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,16 +16,21 @@ public class StockMovement {
     @Column(columnDefinition = "uuid", updatable = false, unique = true, nullable = false)
     private UUID uuid;
 
+    @NotNull(message = "La date du mouvement est obligatoire")
     @Column(nullable = false)
     private LocalDateTime date;
 
+    @NotNull(message = "La quantité est obligatoire")
+    @Positive(message = "La quantité doit être positive")
     @Column(nullable = false)
     private Integer quantity;
 
+    @NotNull(message = "Le type de mouvement est obligatoire")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StockMovementType type;
 
+    @NotNull(message = "Le produit est obligatoire")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;

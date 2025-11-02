@@ -2,18 +2,22 @@ package com.tricol.tricol.model.entity;
 
 import com.tricol.tricol.model.entity.id.ProductsOrderId;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 @Entity
 @Table(name = "products_order")
 public class ProductsOrder extends Auditable {
 
     @EmbeddedId
-    private ProductsOrderId uuid = new ProductsOrderId();
+    private ProductsOrderId id = new ProductsOrderId();
 
-    @Column(nullable = false)
+    @NotNull(message = "La quantité est obligatoire")
+    @Positive(message = "La quantité doit être positive")
     private Integer quantity;
 
-    @Column(nullable = false)
+    @NotNull(message = "Le montant est obligatoire")
+    @Positive(message = "Le montant doit être positif")
     private Double amount;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,18 +32,18 @@ public class ProductsOrder extends Auditable {
 
     public ProductsOrder() {};
 
-    public ProductsOrder(ProductsOrderId uuid, Product product, Order order) {
-        this.uuid = uuid;
+    public ProductsOrder(ProductsOrderId id, Product product, Order order) {
+        this.id = id;
         this.product = product;
         this.order = order;
     }
 
-    public ProductsOrderId getUuid() {
-        return uuid;
+    public ProductsOrderId getId() {
+        return id;
     }
 
-    public void setUuid(ProductsOrderId uuid) {
-        this.uuid = uuid;
+    public void setId(ProductsOrderId id) {
+        this.id = id;
     }
 
     public Product getProduct() {

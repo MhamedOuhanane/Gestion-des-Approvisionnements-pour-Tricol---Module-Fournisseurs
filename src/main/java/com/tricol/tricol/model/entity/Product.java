@@ -1,6 +1,9 @@
 package com.tricol.tricol.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.util.*;
 
@@ -12,18 +15,24 @@ public class Product {
     @Column(columnDefinition = "uuid", nullable = false, updatable = false, unique = true)
     private UUID uuid;
 
+    @NotBlank(message = "le nom du produit est obligatoire")
     @Column(nullable = false)
     private String name;
 
+    @NotBlank(message = "La catégorie du produit est obligatoire")
     @Column(nullable = false)
     private String category;
 
+    @NotBlank(message = "la description du produit est obligatoire")
     @Column(nullable = false)
     private String description;
 
+    @NotNull(message = "le prix du produit est obligatoire")
+    @Positive(message = "le prix doit être positif")
     @Column(nullable = false)
     private Double unitPrice;
 
+    @Positive(message = "la quantité doit être positive")
     @Column(nullable = false)
     private Integer quantity;
 

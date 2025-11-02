@@ -1,6 +1,8 @@
 package com.tricol.tricol.model.dto;
 
 import com.tricol.tricol.model.enums.StockMovementType;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -8,9 +10,17 @@ import java.util.UUID;
 public class StockMovementDTO {
     private UUID uuid;
     private LocalDateTime date;
+
+    @NotNull(message = "La quantité est obligatoire")
+    @Positive(message = "La quantité doit être positive")
     private Integer quantity;
+
+    @NotNull(message = "Le type de mouvement est obligatoire")
     private StockMovementType type;
+
+    @NotNull(message = "Le produit est obligatoire")
     private UUID productId;
+
     private String productName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
