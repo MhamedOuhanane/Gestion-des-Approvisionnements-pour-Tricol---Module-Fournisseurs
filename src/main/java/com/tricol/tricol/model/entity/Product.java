@@ -9,7 +9,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "products")
-public class Product {
+public class Product  extends Auditable{
     @Id
     @GeneratedValue
     @Column(columnDefinition = "uuid", nullable = false, updatable = false, unique = true)
@@ -29,7 +29,7 @@ public class Product {
 
     @NotNull(message = "le prix du produit est obligatoire")
     @Positive(message = "le prix doit être positif")
-    @Column(nullable = false)
+    @Column(name = "unit_price", nullable = false)
     private Double unitPrice;
 
     @Positive(message = "la quantité doit être positive")

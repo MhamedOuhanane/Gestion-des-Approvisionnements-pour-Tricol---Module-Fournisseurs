@@ -25,7 +25,7 @@ public class SupplierController {
 
     @Operation(summary = "Récupérer tous les fournisseurs avec pagination et filtres facultatifs")
     @GetMapping
-    public ResponseEntity<Map<String, Object>> getAll(
+    public ResponseEntity<Map<String, Object>> shows(
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String company,
             @RequestParam(required = false) String contact,
@@ -52,7 +52,7 @@ public class SupplierController {
 
     @Operation(summary = "Récupérer un fournisseur par son UUID")
     @GetMapping("/{uuid}")
-    public ResponseEntity<Map<String, Object>> findById(@PathVariable UUID uuid) {
+    public ResponseEntity<Map<String, Object>> show(@PathVariable UUID uuid) {
         Map<String, Object> result = supplierService.findById(uuid);
         return ResponseEntity.status((int) result.getOrDefault("status", 200)).body(result);
     }

@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "stock_movements")
-public class StockMovement {
+public class StockMovement extends Auditable{
     @Id
     @GeneratedValue
     @Column(columnDefinition = "uuid", updatable = false, unique = true, nullable = false)

@@ -53,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
             message = "Le produit '" + product.getName() + "' a été ajouté avec succès!";
         }
         product = productRepository.save(product);
-        if (dto.getUuid() != null) {
+        if (dto.getUuid() != null && !dto.getUuid().equals(product.getUuid())) {
             productRepository.delete(productMapper.toEntity(dto));
         }
 
@@ -160,6 +160,7 @@ public class ProductServiceImpl implements ProductService {
             throw new AppException("L'identifiant du produit ne peut pas être vide", HttpStatus.BAD_REQUEST);
         Product product = productRepository.findById(uuid)
                 .orElseThrow(() -> new AppException("Aucun produit trouvé avec cet identifiant", HttpStatus.NOT_FOUND));
+        productRepository.delete(product);
         boolean deleted = productRepository.findById(uuid).isPresent();
         String message = !deleted
                 ? "Le fournisseur a été supprimé avec succès."
