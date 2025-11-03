@@ -42,11 +42,13 @@ public class Order extends Auditable {
 
     public Order() {}
 
-    public Order(UUID uuid, LocalDateTime orderDate, OrderStatus status, Double totalAmount) {
+    public Order(UUID uuid, LocalDateTime orderDate, OrderStatus status, Double totalAmount, Supplier supplier, List<ProductsOrder> productsOrders) {
         this.uuid = uuid;
         this.orderDate = orderDate;
         this.status = status;
         this.totalAmount = totalAmount;
+        this.supplier = supplier;
+        this.productsOrders = productsOrders;
     }
 
     public UUID getUuid() {

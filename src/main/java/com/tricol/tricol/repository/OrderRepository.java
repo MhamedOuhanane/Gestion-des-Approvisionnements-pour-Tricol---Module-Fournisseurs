@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface OrderRepository extends JpaRepository<Order, UUID> {
@@ -29,4 +31,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
             @Param("supplierId") UUID supplierId,
             Pageable pageable
     );
+
+    @EntityGraph(attributePaths = {"supplier", "productsOrders", "productsOrders.product"})
+    Optional<Order> findDetailedById(UUID uuid);
 }

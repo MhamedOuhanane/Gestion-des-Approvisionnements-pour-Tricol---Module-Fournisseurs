@@ -90,7 +90,7 @@ public class ProductServiceImpl implements ProductService {
             message = "Aucun produit n'existe dans le système";
             data = List.of();
         } else {
-            message = "Tous les produits trouvés avec succès";
+            message = "Les produits trouvés avec succès";
             data = products.stream()
                     .map(productMapper::toDto)
                     .toList();

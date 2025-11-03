@@ -67,7 +67,7 @@ public class SupplierServiceImpl implements SupplierService {
             message = "Aucun fournisseur n'existe dans le système";
             data = List.of();
         } else {
-            message = "Tous les fournisseurs trouvés avec succès";
+            message = "Les fournisseurs trouvés avec succès";
             data = suppliers.stream()
                     .map(supplierMapper::toDto)
                     .toList();
