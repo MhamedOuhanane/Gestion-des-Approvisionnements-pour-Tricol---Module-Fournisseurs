@@ -45,7 +45,7 @@ public class ProductServiceImpl implements ProductService {
             product.setQuantity(product.getQuantity() + dto.getQuantity());
             message = "Les informations du produit existant mise à jour";
             status = 200;
-        } else if (!productRepository.findByName(dto.getName()).isEmpty()) {
+        } else if (!productRepository.findByNameOrderByUpdatedAtAsc(dto.getName()).isEmpty()) {
                 product = productMapper.toEntity(dto);
                 message = "Nouveau produit créé avec le même nom '" + product.getName() + "' et prix différent";
         } else {

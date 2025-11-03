@@ -1,4 +1,10 @@
 package com.tricol.tricol.service.interfaces;
 
-public interface OrderService {
+import com.tricol.tricol.model.dto.OrderDTO;
+import com.tricol.tricol.model.dto.SupplierDTO;
+
+import java.util.Map;
+
+public interface OrderService extends Service<OrderDTO> {
+    Map<String, Object> findAllBySupplier(SupplierDTO dto);
 }

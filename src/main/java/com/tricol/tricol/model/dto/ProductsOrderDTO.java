@@ -11,6 +11,7 @@ public class ProductsOrderDTO {
 
     private UUID orderId;
 
+    @NotBlank(message = "Le nom du produit est obligatoire")
     private String productName;
 
     @NotNull(message = "La quantité est obligatoire")

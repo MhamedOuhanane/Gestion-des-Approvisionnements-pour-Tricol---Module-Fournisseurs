@@ -14,5 +14,5 @@ import java.util.UUID;
 public interface ProductRepository extends JpaRepository<Product, UUID> {
     Page<Product> findByNameContainingAndCategoryContaining(Pageable pageable, String name, String category);
     Optional<Product> findByNameAndUnitPrice(String name, Double unitPrice);
-    List<Product> findByName(String name);
+    List<Product> findByNameOrderByUpdatedAtAsc(String name);
 }

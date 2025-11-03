@@ -20,7 +20,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
             where (:supplierContact is null or lower(s.contact) like lower(concat('%', :supplierContact, '%')))
             and (:productName is null or lower(p.name) like lower(concat('%', :productName, '%')))
             and (:status is null or lower(o.status) = lower(:status))
-            and (:supplierId is null or :supplierId = s.uuid)
+            and (:supplierId is null or s.uuid = :supplierId)
             """)
     Page<Order> findAllWithFilters(
             @Param("supplierContact") String supplierContact,
