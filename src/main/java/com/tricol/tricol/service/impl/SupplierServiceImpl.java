@@ -21,7 +21,6 @@ public class SupplierServiceImpl implements SupplierService {
     private final SupplierRepository supplierRepository;
     private final SupplierMapper supplierMapper;
 
-    @Autowired
     public SupplierServiceImpl(SupplierRepository supplierRepository, SupplierMapper supplierMapper) {
         this.supplierRepository = supplierRepository;
         this.supplierMapper = supplierMapper;
@@ -56,9 +55,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public Map<String, Object> findAll(Map<String, Object> map) {
-        if (map.isEmpty()) {
-            return Map.of("page", 0, "size", 5);
-        }
+        if (map.isEmpty()) map = Map.of("page", 0, "size", 5);
         Pageable pageable = PageRequest.of((int) map.get("page"), (int) map.get("size"), Sort.by("contact").ascending());
         String city = (String) map.getOrDefault("city", "");
         String company = (String) map.getOrDefault("company", "");
@@ -105,15 +102,43 @@ public class SupplierServiceImpl implements SupplierService {
                     supplier
             );
         }
-        supplier.setCompany(dto.getCompany());
-        supplier.setContact(dto.getContact());
-        supplier.setEmail(dto.getEmail());
-        supplier.setIce(dto.getIce());
-        supplier.setCity(dto.getCity());
-        supplier.setAddress(dto.getAddress());
-        supplier = supplierRepository.save(supplier);
+        boolean updated = false;
+
+
+        if (!supplier.getCompany().equals(dto.getCompany())) {
+            supplier.setCompany(dto.getCompany());
+            updated = true;
+        }
+        if (!supplier.getContact().equals(dto.getContact())) {
+            supplier.setContact(dto.getContact());
+            updated = true;
+        }
+        if (!supplier.getEmail().equals(dto.getEmail())) {
+            supplier.setEmail(dto.getEmail());
+            updated = true;
+        }
+        if (!supplier.getIce().equals(dto.getIce())) {
+            supplier.setIce(dto.getIce());
+            updated = true;
+        }
+        if (!supplier.getCity().equals(dto.getCity())) {
+            supplier.setCity(dto.getCity());
+            updated = true;
+        }
+        if (!supplier.getAddress().equals(dto.getAddress())) {
+            supplier.setAddress(dto.getAddress());
+            updated = true;
+        }
+
+        String message;
+        if (updated) {
+            supplier = supplierRepository.save(supplier);
+            message = "Le fournisseur '" + supplier.getEmail() + "' a été mis à jour avec succès!";
+        } else {
+            message = "Aucun champ du fournisseur n'a été modifié.";
+        }
         return Map.of(
-                "message", "Le fournisseur '" + supplier.getEmail() + "' a été mis à jour avec succès !",
+                "message", message,
                 "status", 200,
                 "data", supplierMapper.toDto(supplier)
         );

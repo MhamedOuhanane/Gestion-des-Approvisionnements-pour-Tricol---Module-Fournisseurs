@@ -1,4 +1,7 @@
 package com.tricol.tricol.service.interfaces;
 
-public interface ProductService {
+import com.tricol.tricol.model.dto.ProductDTO;
+import com.tricol.tricol.model.entity.Product;
+
+public interface ProductService extends Service<ProductDTO> {
 }

@@ -1,7 +1,6 @@
 package com.tricol.tricol.model.dto;
 
 import com.tricol.tricol.model.enums.OrderStatus;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
