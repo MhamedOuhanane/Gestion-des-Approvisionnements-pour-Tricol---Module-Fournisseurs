@@ -109,10 +109,14 @@ public class OrderServiceImpl implements OrderService {
         String message;
         Object data;
         if (orders.isEmpty()) {
-            message = "Aucun orders n'existe dans le système";
+            if (supplierId != null) {
+                message = "Aucune commande n'existe pour ce fournisseur";
+            } else {
+                message = "Aucune commande n'existe dans le système";
+            }
             data = List.of();
         } else {
-            message = "Les orderss trouvés avec succès";
+            message = "Les commandes trouvées avec succès";
             data = orders.stream().map(orderMapper::toDto).collect(Collectors.toList());
         }
 
@@ -123,6 +127,7 @@ public class OrderServiceImpl implements OrderService {
                 "pagination", pagination
         );
     }
+
 
     @Override
     public Map<String, Object> update(UUID uuid, OrderDTO dto) {

@@ -136,4 +136,33 @@ public class OrderController {
         var result = orderService.updateStatus(uuid, dto.getOrderStatusEnum());
         return ResponseEntity.status((int) result.getOrDefault("status", 200)).body(result);
     }
+
+    @GetMapping("/supplier/{supplierId}")
+    @Operation(
+            summary = "Liste des commandes d'un fournisseur",
+            description = "Récupère toutes les commandes d'un fournisseur donné avec pagination et filtres optionnels.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Liste récupérée avec succès"),
+                    @ApiResponse(responseCode = "404", description = "Fournisseur non trouvé", content = @Content)
+            }
+    )
+    public ResponseEntity<Map<String, Object>> ordersSupplier(
+            @Parameter(description = "Statut de la commande") @RequestParam(required = false) String status,
+            @Parameter(description = "Contact du fournisseur") @RequestParam(required = false) String supplierContact,
+            @Parameter(description = "Nom du produit") @RequestParam(required = false) String productName,
+            @Parameter(description = "UUID du fournisseur") @PathVariable UUID supplierId,
+            @Parameter(description = "Page") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Taille de la page") @RequestParam(defaultValue = "5") int size
+    ) {
+        Map<String, Object> map = Map.of(
+                "page", page,
+                "size", size,
+                "status", status != null ? status : "",
+                "supplierId", supplierId,
+                "supplierContact", supplierContact != null ? supplierContact : "",
+                "productName", productName != null ? productName : ""
+        );
+        var result = orderService.findAll(map);
+        return ResponseEntity.status((int) result.getOrDefault("status", 200)).body(result);
+    }
 }
