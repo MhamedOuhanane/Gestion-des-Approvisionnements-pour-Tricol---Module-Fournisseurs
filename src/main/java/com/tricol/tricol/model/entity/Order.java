@@ -18,7 +18,7 @@ public class Order extends Auditable {
     private UUID uuid;
 
     @NotNull(message = "La date de commande est obligatoire")
-    @Column(nullable = false)
+    @Column(name = "order_date", nullable = false)
     private LocalDateTime orderDate;
 
     @NotNull(message = "Le statut de la commande est obligatoire")
@@ -28,7 +28,7 @@ public class Order extends Auditable {
 
     @NotNull(message = "Le montant total est obligatoire")
     @Positive(message = "Le montant total doit être positif")
-    @Column(nullable = false)
+    @Column(name = "total_amount", nullable = false)
     private Double totalAmount;
 
     @NotNull(message = "Le fournisseur est obligatoire")

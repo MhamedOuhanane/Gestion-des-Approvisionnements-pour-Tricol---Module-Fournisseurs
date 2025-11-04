@@ -48,7 +48,13 @@ public class OrderServiceImpl implements OrderService {
             throw new AppException("Les informations du commande ne peuvent pas être vides", HttpStatus.BAD_REQUEST);
         Order order = orderMapper.toEntity(dto);
 
-        order = handleOrderProcessing(order, dto.getProductsOrders(), "PENDING");
+        List<ProductsOrder> productsOrders = buildProductsOrders(dto.getProductsOrders());
+        order.setTotalAmount(calculateTotalAmount(productsOrders));
+        order.setOrderDate(LocalDateTime.now());
+        order.setStatus(OrderStatus.PENDING);
+        order.setProductsOrders(productsOrders);
+
+        order = orderRepository.save(order);
 
         return Map.of(
                 "message", "Commande créée avec succès",
@@ -60,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Map<String, Object> findById(UUID uuid) {
         if (uuid == null) throw new AppException("L'identifiant du commande ne peut pas être vide", HttpStatus.BAD_REQUEST);
-        Order order = orderRepository.findDetailedById(uuid)
+        Order order = orderRepository.findDetailedByUuid(uuid)
                 .orElseThrow(() -> new AppException("Aucun commande trouvé avec cet identifiant", HttpStatus.NOT_FOUND));
 
         return Map.of(
@@ -75,10 +81,12 @@ public class OrderServiceImpl implements OrderService {
         if (map.isEmpty()) map = Map.of("page", 0, "size", 5);
 
         UUID supplierId = (UUID) map.getOrDefault("supplierId", null);
-        String status = (String) map.getOrDefault("status", "");
+        OrderStatus status = !Objects.equals((String) map.get("status"), "")
+                ? OrderStatus.valueOf((String) map.get("status"))
+                : null;
         String productName = (String) map.getOrDefault("productName", "");
         String supplierContact = (String) map.getOrDefault("supplierContact", "");
-        Pageable pageable = PageRequest.of((int) map.get("page"), (int) map.get("size"), Sort.by("createdAt").ascending());
+        Pageable pageable = PageRequest.of((int) map.get("page"), (int) map.get("size"), Sort.by("orderDate").ascending());
 
         Page<Order> orders = orderRepository.findAllWithFilters(supplierContact, productName, status, supplierId, pageable);
         Map<String, Object> pagination = Map.of(
@@ -114,33 +122,35 @@ public class OrderServiceImpl implements OrderService {
             throw new AppException("L'identifiant du commande ne peut pas être vide", HttpStatus.BAD_REQUEST);
         if (dto == null)
             throw new AppException("Les informations du commande ne peuvent pas être vides", HttpStatus.BAD_REQUEST);
-        Order order = orderRepository.findDetailedById(uuid)
+        Order order = orderRepository.findDetailedByUuid(uuid)
                 .orElseThrow(() -> new AppException("Aucun commande trouvé avec cet identifiant", HttpStatus.NOT_FOUND));
-        boolean updated = false;
+        boolean hasChanges = false;
+        List<ProductsOrder> existing = order.getProductsOrders();
+        List<ProductsOrder> updated = buildProductsOrders(dto.getProductsOrders());
+
+        OrderStatus oldStatus = order.getStatus();
+
         if (!order.getOrderDate().equals(dto.getOrderDate())) {
             order.setOrderDate(dto.getOrderDate());
-            updated = true;
+            hasChanges = true;
         }
         if (!order.getStatus().equals(dto.getStatus())) {
-            order.setStatus(dto.getStatus());
-            updated = true;
+            order = handleStatusTransition(order, dto.getStatus());
+            hasChanges = true;
         }
-        if (!order.getTotalAmount().equals(dto.getTotalAmount())) {
-            order.setTotalAmount(dto.getTotalAmount());
-            updated = true;
+        if (existing.size() != updated.size() || !new HashSet<>(existing).containsAll(updated)) {
+            order.setProductsOrders(updated);
+            order.setTotalAmount(calculateTotalAmount(updated));
+            hasChanges = true;
         }
-        if (!order.getStatus().equals(dto.getStatus())) {
-            order = handleStatusTransition(order, dto.getStatus().name());
-            updated = true;
+        if (hasChanges) {
+            order = orderRepository.save(order);
+            if (oldStatus == OrderStatus.PENDING && order.getStatus() == OrderStatus.VALIDATED)
+                updateDeliveredProducts(order.getProductsOrders());
         }
-        if (!order.getProductsOrders().equals(dto.getProductsOrders())) {
-            order = handleOrderProcessing(order, dto.getProductsOrders(), order.getStatus().name());
-            updated = true;
-        }
-        else if (updated) order = orderRepository.save(order);
 
         return Map.of(
-                "message", updated ? "Le commande  a été mis à jour avec succès!" : "Aucun champ du fournisseur n'a été modifié.",
+                "message", hasChanges ? "Le commande  a été mis à jour avec succès!" : "Aucun champ du fournisseur n'a été modifié.",
                 "status", 200,
                 "data", orderMapper.toDto(order)
         );
@@ -149,8 +159,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Map<String, Object> delete(UUID uuid) {
         if (uuid == null) throw new AppException("L'identifiant du commande ne peut pas être vide", HttpStatus.BAD_REQUEST);
-        Order order = orderRepository.findDetailedById(uuid)
+        Order order = orderRepository.findDetailedByUuid(uuid)
                 .orElseThrow(() -> new AppException("Aucun commande trouvé avec cet identifiant", HttpStatus.NOT_FOUND));
+        if (order.getStatus() != OrderStatus.PENDING && order.getStatus() != OrderStatus.CANCELED)
+            throw new AppException("Transition non autorisée : seule une commande 'Annulé' ou 'En attente' peut être supprimer", HttpStatus.BAD_REQUEST);
         orderRepository.delete(order);
         boolean deleted = !orderRepository.existsById(uuid);
         String message = deleted
@@ -175,20 +187,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Map<String, Object> updateStatus(UUID uuid, String status) {
+    public Map<String, Object> updateStatus(UUID uuid, OrderStatus status) {
         if (uuid == null)
             throw new AppException("L'identifiant du commande ne peut pas être vide", HttpStatus.BAD_REQUEST);
         if (status == null)
             throw new AppException("Le nouveau status ne peut pas être vide", HttpStatus.BAD_REQUEST);
-        Order order = orderRepository.findDetailedById(uuid)
+        Order order = orderRepository.findDetailedByUuid(uuid)
                 .orElseThrow(() -> new AppException("Aucun commande trouvé avec cet identifiant", HttpStatus.NOT_FOUND));
 
-        if (order.getStatus().equals(OrderStatus.valueOf(status.toUpperCase())))
+        if (order.getStatus() == status)
             throw new AppException("Le statut est déjà " + status, HttpStatus.BAD_REQUEST);
         order = handleStatusTransition(order, status);
-        orderRepository.save(order);
+        order = orderRepository.save(order);
 
-        if (order.getStatus() == OrderStatus.VALIDATED && status.equalsIgnoreCase("VALIDATED"))
+        if (OrderStatus.VALIDATED == status && order.getStatus() == status)
             updateDeliveredProducts(order.getProductsOrders());
 
 
@@ -197,20 +209,6 @@ public class OrderServiceImpl implements OrderService {
                 "status", 200,
                 "data", order
         );
-    }
-
-    private Order handleOrderProcessing(Order order, List<ProductsOrderDTO> productsOrderDTOS, String status) {
-        List<ProductsOrder> productsOrders = buildProductsOrders(productsOrderDTOS);
-        order.setTotalAmount(calculateTotalAmount(productsOrders));
-        order.setOrderDate(LocalDateTime.now());
-        order.setStatus(OrderStatus.valueOf(status.toUpperCase()));
-        order.setProductsOrders(productsOrders);
-
-        order = orderRepository.save(order);
-        if (OrderStatus.VALIDATED.name().equalsIgnoreCase(status)) {
-            updateDeliveredProducts(productsOrders);
-        }
-        return  order;
     }
 
     private List<ProductsOrder> buildProductsOrders(List<ProductsOrderDTO> productsOrderDTOS) {
@@ -275,22 +273,20 @@ public class OrderServiceImpl implements OrderService {
         );
     }
 
-    private Order handleStatusTransition(Order order, String status) {
-        OrderStatus newStatus = OrderStatus.valueOf(status.toUpperCase());
-
-        if (order.getStatus().equals(newStatus))
+    private Order handleStatusTransition(Order order, OrderStatus status) {
+        if (order.getStatus().equals(status))
             return order;
 
-        switch (newStatus) {
+        switch (status) {
             case CANCELED, VALIDATED -> {
                 if (order.getStatus() != OrderStatus.PENDING)
-                    throw new AppException("Transition non autorisée : seule une commande 'PENDING' peut être " + newStatus.getDesc(), HttpStatus.BAD_REQUEST);
-                order.setStatus(newStatus);
+                    throw new AppException("Transition non autorisée : seule une commande 'PENDING' peut être " + status.getDesc(), HttpStatus.BAD_REQUEST);
+                order.setStatus(status);
             }
             case DELIVERED -> {
                 if (order.getStatus() != OrderStatus.VALIDATED)
                     throw new AppException("Transition non autorisée : seule une commande 'VALIDATED' peut être 'DELIVERED'", HttpStatus.BAD_REQUEST);
-                order.setStatus(newStatus);
+                order.setStatus(status);
             }
             case PENDING -> throw new AppException("Transition non autorisée : Le statut ne peut pas être modifié en « en attente ».", HttpStatus.BAD_REQUEST);
             default -> throw new AppException("Transition de statut non reconnue", HttpStatus.BAD_REQUEST);

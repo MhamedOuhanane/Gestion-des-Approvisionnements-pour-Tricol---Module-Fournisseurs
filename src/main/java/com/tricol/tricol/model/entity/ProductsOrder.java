@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "products_order")
 public class ProductsOrder extends Auditable {
@@ -76,5 +78,20 @@ public class ProductsOrder extends Auditable {
 
     public void setAmount(Double amount) {
         this.amount = amount;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        ProductsOrder that = (ProductsOrder) object;
+        return Objects.equals(product, that.product) &&
+                Objects.equals(quantity, that.quantity) &&
+                Objects.equals(amount, that.amount);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(product, quantity, amount);
     }
 }

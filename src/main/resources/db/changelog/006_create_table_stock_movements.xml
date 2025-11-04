@@ -12,10 +12,6 @@
                 <tableExists tableName="stock_movements"/>
             </not>
         </preConditions>
-        <sql>
-            CREATE TYPE stock_movements_type AS ENUM('ENTRANCE', 'EXIT', 'ADJUSTMENT');
-        </sql>
-
         <createTable tableName="stock_movements">
             <column name="uuid" type="uuid">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
@@ -26,7 +22,7 @@
             <column name="quantity" type="INT" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
-            <column name="type" type="stock_movements_type" defaultValue="ENTRANCE">
+            <column name="type" type="VARCHAR(10)" defaultValue="ENTRANCE">
                 <constraints nullable="false"/>
             </column>
             <column name="product_id" type="uuid">

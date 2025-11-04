@@ -1,6 +1,7 @@
 package com.tricol.tricol.repository;
 
 import com.tricol.tricol.model.entity.Order;
+import com.tricol.tricol.model.enums.OrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -21,17 +22,17 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
             left join po.product p
             where (:supplierContact is null or lower(s.contact) like lower(concat('%', :supplierContact, '%')))
             and (:productName is null or lower(p.name) like lower(concat('%', :productName, '%')))
-            and (:status is null or lower(o.status) = lower(:status))
+            and (:status is null or o.status = :status)
             and (:supplierId is null or s.uuid = :supplierId)
             """)
     Page<Order> findAllWithFilters(
             @Param("supplierContact") String supplierContact,
             @Param("productName") String productName,
-            @Param("status") String status,
+            @Param("status") OrderStatus status,
             @Param("supplierId") UUID supplierId,
             Pageable pageable
     );
 
     @EntityGraph(attributePaths = {"supplier", "productsOrders", "productsOrders.product"})
-    Optional<Order> findDetailedById(UUID uuid);
+    Optional<Order> findDetailedByUuid(UUID uuid);
 }
