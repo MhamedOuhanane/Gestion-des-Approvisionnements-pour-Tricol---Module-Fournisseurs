@@ -36,10 +36,10 @@ public class Product  extends Auditable{
     @Column(nullable = false)
     private Integer quantity;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.DETACH, orphanRemoval = true)
     private List<StockMovement> stockMovements = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.DETACH, orphanRemoval = true)
     private List<ProductsOrder> productsOrders = new ArrayList<>();
 
     public Product() {};

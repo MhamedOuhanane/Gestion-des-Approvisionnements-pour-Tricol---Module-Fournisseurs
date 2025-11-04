@@ -21,9 +21,6 @@ public class ProductsOrderDTO {
     @Positive(message = "Le montant doit être positif")
     private Double amount;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-
     public ProductsOrderDTO() {}
 
     public ProductsOrderDTO(UUID productId, UUID orderId, String productName, Integer quantity, Double amount) {
@@ -72,21 +69,5 @@ public class ProductsOrderDTO {
 
     public void setAmount(Double amount) {
         this.amount = amount;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "products_order")
-public class ProductsOrder extends Auditable {
+public class ProductsOrder {
 
     @EmbeddedId
     private ProductsOrderId id = new ProductsOrderId();

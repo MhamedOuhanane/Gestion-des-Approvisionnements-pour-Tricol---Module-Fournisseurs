@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+      http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="013" author="M'hamed">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="products"/>
+        </preConditions>
+
+        <!-- Produits pour Tricol : matières premières et équipements -->
+        <insert tableName="products">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="name" value="Tissu coton"/>
+            <column name="category" value="Matières premières"/>
+            <column name="description" value="Tissu coton pour confection de vêtements professionnels"/>
+            <column name="unit_price" valueNumeric="12.50"/>
+            <column name="quantity" valueNumeric="500"/>
+            <column name="created_at" valueDate="2025-11-04T09:00:00"/>
+            <column name="updated_at" valueDate="2025-11-04T09:00:00"/>
+        </insert>
+
+        <insert tableName="products">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="name" value="Fil polyester"/>
+            <column name="category" value="Matières premières"/>
+            <column name="description" value="Fil polyester haute résistance pour couture industrielle"/>
+            <column name="unit_price" valueNumeric="8.00"/>
+            <column name="quantity" valueNumeric="1000"/>
+            <column name="created_at" valueDate="2025-11-04T09:00:00"/>
+            <column name="updated_at" valueDate="2025-11-04T09:00:00"/>
+        </insert>
+
+        <insert tableName="products">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="name" value="Boutons métalliques"/>
+            <column name="category" value="Accessoires"/>
+            <column name="description" value="Lot de boutons métalliques pour vestes et uniformes"/>
+            <column name="unit_price" valueNumeric="0.15"/>
+            <column name="quantity" valueNumeric="2000"/>
+            <column name="created_at" valueDate="2025-11-04T09:00:00"/>
+            <column name="updated_at" valueDate="2025-11-04T09:00:00"/>
+        </insert>
+
+        <insert tableName="products">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="name" value="Fermetures éclair"/>
+            <column name="category" value="Accessoires"/>
+            <column name="description" value="Fermetures éclair de haute qualité pour vêtements professionnels"/>
+            <column name="unit_price" valueNumeric="1.50"/>
+            <column name="quantity" valueNumeric="800"/>
+            <column name="created_at" valueDate="2025-11-04T09:00:00"/>
+            <column name="updated_at" valueDate="2025-11-04T09:00:00"/>
+        </insert>
+
+        <insert tableName="products">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="name" value="Étiquettes de marque"/>
+            <column name="category" value="Accessoires"/>
+            <column name="description" value="Étiquettes textiles pour marquage des uniformes"/>
+            <column name="unit_price" valueNumeric="0.20"/>
+            <column name="quantity" valueNumeric="1500"/>
+            <column name="created_at" valueDate="2025-11-04T09:00:00"/>
+            <column name="updated_at" valueDate="2025-11-04T09:00:00"/>
+        </insert>
+
+        <insert tableName="products">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="name" value="Machines à coudre"/>
+            <column name="category" value="Équipements"/>
+            <column name="description" value="Machines à coudre haute performance pour production en série"/>
+            <column name="unit_price" valueNumeric="2500.00"/>
+            <column name="quantity" valueNumeric="10"/>
+            <column name="created_at" valueDate="2025-11-04T09:00:00"/>
+            <column name="updated_at" valueDate="2025-11-04T09:00:00"/>
+        </insert>
+
+        <insert tableName="products">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="name" value="Tables de découpe"/>
+            <column name="category" value="Équipements"/>
+            <column name="description" value="Tables de découpe adaptées pour tissus et matières premières"/>
+            <column name="unit_price" valueNumeric="1200.00"/>
+            <column name="quantity" valueNumeric="5"/>
+            <column name="created_at" valueDate="2025-11-04T09:00:00"/>
+            <column name="updated_at" valueDate="2025-11-04T09:00:00"/>
+        </insert>
+
+        <insert tableName="products">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="name" value="Mannequins de couture"/>
+            <column name="category" value="Équipements"/>
+            <column name="description" value="Mannequins ajustables pour confection et contrôle qualité"/>
+            <column name="unit_price" valueNumeric="350.00"/>
+            <column name="quantity" valueNumeric="20"/>
+            <column name="created_at" valueDate="2025-11-04T09:00:00"/>
+            <column name="updated_at" valueDate="2025-11-04T09:00:00"/>
+        </insert>
+
+        <insert tableName="products">
+            <column name="uuid" valueComputed="gen_random_uuid()"/>
+            <column name="name" value="Équipements de repassage"/>
+            <column name="category" value="Équipements"/>
+            <column name="description" value="Équipements professionnels pour repassage et finition des vêtements"/>
+            <column name="unit_price" valueNumeric="800.00"/>
+            <column name="quantity" valueNumeric="8"/>
+            <column name="created_at" valueDate="2025-11-04T09:00:00"/>
+            <column name="updated_at" valueDate="2025-11-04T09:00:00"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>

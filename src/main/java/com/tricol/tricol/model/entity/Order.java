@@ -27,7 +27,7 @@ public class Order extends Auditable {
     private OrderStatus status;
 
     @NotNull(message = "Le montant total est obligatoire")
-    @Positive(message = "Le montant total doit être positif")
+    @PositiveOrZero(message = "Le montant total doit être positif")
     @Column(name = "total_amount", nullable = false)
     private Double totalAmount;
 

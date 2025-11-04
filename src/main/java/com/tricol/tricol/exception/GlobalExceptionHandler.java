@@ -42,6 +42,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleGeneralException(Exception e) {
         return ResponseEntity.internalServerError().body(Map.of(
                 "message", e.getMessage(),
+                "couse", e.getCause(),
                 "status", 500,
                 "data", Map.of()
         ));

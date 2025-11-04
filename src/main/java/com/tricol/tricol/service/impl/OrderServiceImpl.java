@@ -8,6 +8,7 @@ import com.tricol.tricol.model.entity.Order;
 import com.tricol.tricol.model.entity.Product;
 import com.tricol.tricol.model.entity.ProductsOrder;
 import com.tricol.tricol.model.entity.Supplier;
+import com.tricol.tricol.model.entity.id.ProductsOrderId;
 import com.tricol.tricol.model.enums.OrderStatus;
 import com.tricol.tricol.model.mapper.OrderMapper;
 import com.tricol.tricol.model.mapper.ProductsOrderMapper;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -46,13 +48,19 @@ public class OrderServiceImpl implements OrderService {
     public Map<String, Object> create(OrderDTO dto) {
         if (dto == null)
             throw new AppException("Les informations du commande ne peuvent pas être vides", HttpStatus.BAD_REQUEST);
-        Order order = orderMapper.toEntity(dto);
+        Supplier supplier = supplierRepository.findById(dto.getSupplierId())
+                .orElseThrow(() -> new AppException("Aucun fournisseur trouvé avec cet identifiant", HttpStatus.NOT_FOUND));
 
-        List<ProductsOrder> productsOrders = buildProductsOrders(dto.getProductsOrders());
-        order.setTotalAmount(calculateTotalAmount(productsOrders));
+        Order order = orderMapper.toEntity(dto);
+        order.setSupplier(supplier);
         order.setOrderDate(LocalDateTime.now());
         order.setStatus(OrderStatus.PENDING);
-        order.setProductsOrders(productsOrders);
+        order.setTotalAmount(0.);
+        order = orderRepository.save(order);
+
+        List<ProductsOrder> productsOrders = buildProductsOrders(order, dto.getProductsOrders());
+        order.setTotalAmount(calculateTotalAmount(productsOrders));
+        order.getProductsOrders().addAll(productsOrders);
 
         order = orderRepository.save(order);
 
@@ -105,7 +113,7 @@ public class OrderServiceImpl implements OrderService {
             data = List.of();
         } else {
             message = "Les orderss trouvés avec succès";
-            data = orders.stream().map(orderMapper::toDto).toList();
+            data = orders.stream().map(orderMapper::toDto).collect(Collectors.toList());
         }
 
         return Map.of(
@@ -126,20 +134,21 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new AppException("Aucun commande trouvé avec cet identifiant", HttpStatus.NOT_FOUND));
         boolean hasChanges = false;
         List<ProductsOrder> existing = order.getProductsOrders();
-        List<ProductsOrder> updated = buildProductsOrders(dto.getProductsOrders());
+        List<ProductsOrder> updated = buildProductsOrders(order, dto.getProductsOrders());
 
         OrderStatus oldStatus = order.getStatus();
 
-        if (!order.getOrderDate().equals(dto.getOrderDate())) {
+        if (order.getOrderDate() != null && !order.getOrderDate().equals(dto.getOrderDate())) {
             order.setOrderDate(dto.getOrderDate());
             hasChanges = true;
         }
-        if (!order.getStatus().equals(dto.getStatus())) {
+        if (order.getStatus() != null && !order.getStatus().equals(dto.getStatus())) {
             order = handleStatusTransition(order, dto.getStatus());
             hasChanges = true;
         }
         if (existing.size() != updated.size() || !new HashSet<>(existing).containsAll(updated)) {
-            order.setProductsOrders(updated);
+            order.getProductsOrders().clear();
+            order.getProductsOrders().addAll(updated);
             order.setTotalAmount(calculateTotalAmount(updated));
             hasChanges = true;
         }
@@ -196,32 +205,48 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new AppException("Aucun commande trouvé avec cet identifiant", HttpStatus.NOT_FOUND));
 
         if (order.getStatus() == status)
-            throw new AppException("Le statut est déjà " + status, HttpStatus.BAD_REQUEST);
+            throw new AppException("Le statut est déjà " + status.getDesc(), HttpStatus.BAD_REQUEST);
         order = handleStatusTransition(order, status);
-        order = orderRepository.save(order);
+        Order newOrder = orderRepository.save(order);
 
-        if (OrderStatus.VALIDATED == status && order.getStatus() == status)
-            updateDeliveredProducts(order.getProductsOrders());
+        if (status == OrderStatus.VALIDATED && newOrder.getStatus() == status)
+            updateDeliveredProducts(newOrder.getProductsOrders());
 
 
         return Map.of(
-                "message", "Le commande est " + order.getStatus().getDesc() + " avec succès!",
+                "message", "Le commande est " + newOrder.getStatus().getDesc() + " avec succès!",
                 "status", 200,
-                "data", order
+                "data", newOrder
         );
     }
 
-    private List<ProductsOrder> buildProductsOrders(List<ProductsOrderDTO> productsOrderDTOS) {
+    private List<ProductsOrder> buildProductsOrders(Order order,List<ProductsOrderDTO> productsOrderDTOS) {
         return productsOrderDTOS.stream()
                 .map(pod -> {
                     Map<String, Object> fifoResult = calculateAmountFIFO(pod.getProductName(), pod.getQuantity());
                     pod.setAmount(((Number) fifoResult.getOrDefault("amount", 0)).doubleValue());
-                    List<Product> products = (List<Product>) fifoResult.get("products");
 
-                    ProductsOrder productsOrder = productsOrderMapper.toEntity(pod);
-                    productsOrder.setProduct(products.stream().findFirst().orElseThrow());
-                    return productsOrder;
-                }).toList();
+                    List<Product> products = (List<Product>) fifoResult.get("products");
+                    Product product = products.stream()
+                            .findFirst()
+                            .orElseThrow(() -> new AppException("Produit introuvable après FIFO", HttpStatus.NOT_FOUND));
+
+                    return getProductsOrder(order, pod, product);
+                }).collect(Collectors.toList());
+    }
+
+    private static ProductsOrder getProductsOrder(Order order, ProductsOrderDTO pod, Product product) {
+        ProductsOrder productsOrder = new ProductsOrder();
+        productsOrder.setQuantity(pod.getQuantity());
+        productsOrder.setAmount(pod.getAmount());
+        productsOrder.setProduct(product);
+        productsOrder.setOrder(order);
+
+        ProductsOrderId id = new ProductsOrderId();
+        id.setOrderId(order.getUuid());
+        id.setProductId(product.getUuid());
+        productsOrder.setId(id);
+        return productsOrder;
     }
 
     private double calculateTotalAmount(List<ProductsOrder> productsOrders) {
@@ -234,7 +259,7 @@ public class OrderServiceImpl implements OrderService {
         List<Product> products = productsOrders.stream()
                 .map(ProductsOrder::getProduct)
                 .filter(Objects::nonNull)
-                .toList();
+                .collect(Collectors.toList());
         if (!products.isEmpty()) {
             productRepository.saveAll(products);
         }

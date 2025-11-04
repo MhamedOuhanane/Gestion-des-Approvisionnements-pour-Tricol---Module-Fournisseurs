@@ -48,7 +48,7 @@ public class Supplier extends Auditable {
     @Column(nullable = false)
     private String ice;
 
-    @OneToMany(mappedBy = "supplier", cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.DETACH, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
     public Supplier() {}
