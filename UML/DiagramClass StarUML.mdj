@@ -2016,7 +2016,7 @@
 											"top": 413,
 											"width": 123.12255859375,
 											"height": 13,
-											"text": "-totalAmount: Double",
+											"text": "-amount: Double",
 											"horizontalAlignment": 0
 										}
 									],
@@ -2649,24 +2649,6 @@
 										},
 										{
 											"_type": "UMLOperationView",
-											"_id": "AAAAAAGaJnOBqgONtCs=",
-											"_parent": {
-												"$ref": "AAAAAAGaJm2oQv7Ulx4="
-											},
-											"model": {
-												"$ref": "AAAAAAGaJnOBkQOEycA="
-											},
-											"font": "Arial;13;0",
-											"parentStyle": true,
-											"left": 853,
-											"top": 191,
-											"width": 183,
-											"height": 13,
-											"text": "+findAll(): Map",
-											"horizontalAlignment": 0
-										},
-										{
-											"_type": "UMLOperationView",
 											"_id": "AAAAAAGaJnPAbwPeQJ0=",
 											"_parent": {
 												"$ref": "AAAAAAGaJm2oQv7Ulx4="
@@ -2677,28 +2659,10 @@
 											"font": "Arial;13;0",
 											"parentStyle": true,
 											"left": 853,
-											"top": 206,
+											"top": 191,
 											"width": 183,
 											"height": 13,
-											"text": "+FindAllProduct(UUID): Map",
-											"horizontalAlignment": 0
-										},
-										{
-											"_type": "UMLOperationView",
-											"_id": "AAAAAAGaJnRWCQRRO34=",
-											"_parent": {
-												"$ref": "AAAAAAGaJm2oQv7Ulx4="
-											},
-											"model": {
-												"$ref": "AAAAAAGaJnRV8QRIeYM="
-											},
-											"font": "Arial;13;0",
-											"parentStyle": true,
-											"left": 853,
-											"top": 221,
-											"width": 183,
-											"height": 13,
-											"text": "+delete(UUID): Map",
+											"text": "+FindAll(UUID): Map",
 											"horizontalAlignment": 0
 										}
 									],
@@ -2707,7 +2671,7 @@
 									"left": 848,
 									"top": 171,
 									"width": 193,
-									"height": 68
+									"height": 38
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -4286,7 +4250,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGaJmr79+Q/Li4="
 							},
-							"name": "totalAmount",
+							"name": "amount",
 							"visibility": "private",
 							"type": "Double"
 						}
@@ -4428,30 +4392,11 @@
 						},
 						{
 							"_type": "UMLOperation",
-							"_id": "AAAAAAGaJnOBkQOEycA=",
-							"_parent": {
-								"$ref": "AAAAAAGaJm2oQf7LzMo="
-							},
-							"name": "findAll",
-							"parameters": [
-								{
-									"_type": "UMLParameter",
-									"_id": "AAAAAAGaJnO/lQPBZIw=",
-									"_parent": {
-										"$ref": "AAAAAAGaJnOBkQOEycA="
-									},
-									"type": "Map",
-									"direction": "return"
-								}
-							]
-						},
-						{
-							"_type": "UMLOperation",
 							"_id": "AAAAAAGaJnPAYwPVpDQ=",
 							"_parent": {
 								"$ref": "AAAAAAGaJm2oQf7LzMo="
 							},
-							"name": "FindAllProduct",
+							"name": "FindAll",
 							"parameters": [
 								{
 									"_type": "UMLParameter",
@@ -4459,42 +4404,13 @@
 									"_parent": {
 										"$ref": "AAAAAAGaJnPAYwPVpDQ="
 									},
-									"name": "UUID",
-									"type": ""
+									"name": "UUID"
 								},
 								{
 									"_type": "UMLParameter",
 									"_id": "AAAAAAGaJnQ4ZQQTwkQ=",
 									"_parent": {
 										"$ref": "AAAAAAGaJnPAYwPVpDQ="
-									},
-									"type": "Map",
-									"direction": "return"
-								}
-							]
-						},
-						{
-							"_type": "UMLOperation",
-							"_id": "AAAAAAGaJnRV8QRIeYM=",
-							"_parent": {
-								"$ref": "AAAAAAGaJm2oQf7LzMo="
-							},
-							"name": "delete",
-							"parameters": [
-								{
-									"_type": "UMLParameter",
-									"_id": "AAAAAAGaJnU4PASF3S0=",
-									"_parent": {
-										"$ref": "AAAAAAGaJnRV8QRIeYM="
-									},
-									"name": "UUID",
-									"type": ""
-								},
-								{
-									"_type": "UMLParameter",
-									"_id": "AAAAAAGaJnU4PQSGIP4=",
-									"_parent": {
-										"$ref": "AAAAAAGaJnRV8QRIeYM="
 									},
 									"type": "Map",
 									"direction": "return"
