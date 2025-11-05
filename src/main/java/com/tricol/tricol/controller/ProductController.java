@@ -2,6 +2,7 @@ package com.tricol.tricol.controller;
 
 import com.tricol.tricol.model.dto.ProductDTO;
 import com.tricol.tricol.service.interfaces.ProductService;
+import com.tricol.tricol.service.interfaces.StockMovementService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,9 +20,11 @@ import java.util.UUID;
 @RequestMapping("/products")
 public class ProductController {
     private final ProductService productService;
+    private final StockMovementService stockMovementService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, StockMovementService stockMovementService) {
         this.productService = productService;
+        this.stockMovementService = stockMovementService;
     }
 
     @Operation(
@@ -113,6 +116,23 @@ public class ProductController {
             @Parameter(description = "UUID du produit") @PathVariable UUID uuid
     ) {
         Map<String, Object> result = productService.delete(uuid);
+        return ResponseEntity.status((int) result.getOrDefault("status", 200)).body(result);
+    }
+
+    @GetMapping("/{productId}/stockMovements")
+    public ResponseEntity<Map<String, Object>> showMovement(
+            @PathVariable UUID productId,
+            @Parameter(description = "Catégorie du produit") @RequestParam(required = false, defaultValue = "") String type,
+            @Parameter(description = "Numéro de la page") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Taille de la page") @RequestParam(defaultValue = "5") int size
+
+    ) {
+        Map<String, Object> filter = Map.of(
+                "page", page,
+                "size", size,
+                "type", type
+        );
+        var result = stockMovementService.findAll(filter);
         return ResponseEntity.status((int) result.getOrDefault("status", 200)).body(result);
     }
 }

@@ -1,19 +1,23 @@
 package com.tricol.tricol.service.impl;
 
+import com.tricol.tricol.exception.AppException;
 import com.tricol.tricol.model.entity.Product;
 import com.tricol.tricol.model.entity.StockMovement;
-import com.tricol.tricol.model.enums.OrderStatus;
 import com.tricol.tricol.model.enums.StockMovementType;
+import com.tricol.tricol.model.mapper.StockMovementMapper;
 import com.tricol.tricol.repository.ProductRepository;
 import com.tricol.tricol.repository.StockMovementRepository;
+import com.tricol.tricol.service.interfaces.ProductService;
 import com.tricol.tricol.service.interfaces.StockMovementService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -21,10 +25,12 @@ import java.util.UUID;
 @Service
 public class StockMovementServiceImpl implements StockMovementService {
     private final StockMovementRepository stockMovementRepository;
+    private final StockMovementMapper stockMovementMapper;
     private final ProductRepository productRepository;
 
-    public StockMovementServiceImpl(StockMovementRepository stockMovementRepository, ProductRepository productRepository) {
+    public StockMovementServiceImpl(StockMovementRepository stockMovementRepository, StockMovementMapper stockMovementMapper, ProductRepository productRepository) {
         this.stockMovementRepository = stockMovementRepository;
+        this.stockMovementMapper = stockMovementMapper;
         this.productRepository = productRepository;
     }
 
@@ -42,6 +48,31 @@ public class StockMovementServiceImpl implements StockMovementService {
         StockMovementType type = !Objects.equals((String) filter.get("type"), "")
                 ? StockMovementType.valueOf((String) filter.get("type"))
                 : null;
-        return Map.of();
+
+        Product product = null;
+        if (productId != null)
+             product = productRepository.findById(productId)
+                .orElseThrow(() -> new AppException("Aucun produit trouvé avec cet identifiant", HttpStatus.NOT_FOUND));
+        
+        Page<StockMovement> stockMovements = stockMovementRepository.findByProductAndType(productId, type, pageable);
+
+        String message = stockMovements.isEmpty() ?
+                productId != null ?
+                        "Aucune mouvement de stock n'existe pour ce produit":
+                        "Aucune mouvement de stock n'existe dans le système":
+                product != null ?
+                        "Les mouvements de stock du produit '" + product.getName() + "' trouvées avec succès":
+                        "Les mouvements de stock trouvées avec succès";
+        Object data = stockMovements.isEmpty() ?
+                List.of():
+                stockMovements.stream()
+                        .map(stockMovementMapper::toDto)
+                        .toList();
+
+        return Map.of(
+                "message", message,
+                "status", 200,
+                "data", data
+        );
     }
 }
