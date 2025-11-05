@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 
 import java.util.*;
 
@@ -32,7 +33,7 @@ public class Product  extends Auditable{
     @Column(name = "unit_price", nullable = false)
     private Double unitPrice;
 
-    @Positive(message = "la quantité doit être positive")
+    @PositiveOrZero(message = "la quantité doit être positive")
     @Column(nullable = false)
     private Integer quantity;
 

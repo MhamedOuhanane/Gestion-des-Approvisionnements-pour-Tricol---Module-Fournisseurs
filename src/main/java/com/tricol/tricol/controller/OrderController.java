@@ -131,7 +131,7 @@ public class OrderController {
     )
     public ResponseEntity<Map<String, Object>> updateStatus(
             @Parameter(description = "UUID de la commande") @PathVariable UUID uuid,
-            @Parameter(description = "Nouveau statut de la commande") @RequestBody UpdateOrderStatusDTO dto
+            @Parameter(description = "Nouveau statut de la commande") @RequestBody @Valid UpdateOrderStatusDTO dto
     ) {
         var result = orderService.updateStatus(uuid, dto.getOrderStatusEnum());
         return ResponseEntity.status((int) result.getOrDefault("status", 200)).body(result);

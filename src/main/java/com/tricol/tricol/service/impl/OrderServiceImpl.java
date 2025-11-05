@@ -3,7 +3,6 @@ package com.tricol.tricol.service.impl;
 import com.tricol.tricol.exception.AppException;
 import com.tricol.tricol.model.dto.OrderDTO;
 import com.tricol.tricol.model.dto.ProductsOrderDTO;
-import com.tricol.tricol.model.dto.SupplierDTO;
 import com.tricol.tricol.model.entity.Order;
 import com.tricol.tricol.model.entity.Product;
 import com.tricol.tricol.model.entity.ProductsOrder;
@@ -12,12 +11,10 @@ import com.tricol.tricol.model.entity.id.ProductsOrderId;
 import com.tricol.tricol.model.enums.OrderStatus;
 import com.tricol.tricol.model.enums.StockMovementType;
 import com.tricol.tricol.model.mapper.OrderMapper;
-import com.tricol.tricol.model.mapper.ProductsOrderMapper;
 import com.tricol.tricol.repository.OrderRepository;
 import com.tricol.tricol.repository.ProductRepository;
 import com.tricol.tricol.repository.SupplierRepository;
 import com.tricol.tricol.service.interfaces.OrderService;
-import com.tricol.tricol.service.interfaces.ProductService;
 import com.tricol.tricol.service.interfaces.StockMovementService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -197,16 +194,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Map<String, Object> findAllBySupplier(UUID supplierId, Map<String, Object> map) {
-        if (supplierId == null) throw new AppException("L'identifiant du supplier ne peut pas être vide", HttpStatus.BAD_REQUEST);
-        Supplier supplier = supplierRepository.findById(supplierId)
-                .orElseThrow(() -> new AppException("Aucun supplier trouvé avec cet identifiant", HttpStatus.NOT_FOUND));
-
-        map.put("supplierId", supplierId);
-        return findAll(map);
-    }
-
-    @Override
     public Map<String, Object> updateStatus(UUID uuid, OrderStatus status) {
         if (uuid == null)
             throw new AppException("L'identifiant du commande ne peut pas être vide", HttpStatus.BAD_REQUEST);
@@ -215,25 +202,27 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findDetailedByUuid(uuid)
                 .orElseThrow(() -> new AppException("Aucun commande trouvé avec cet identifiant", HttpStatus.NOT_FOUND));
 
-        if (order.getStatus() == status)
-            throw new AppException("Le statut est déjà " + status.getDesc(), HttpStatus.BAD_REQUEST);
+        if (order.getStatus().equals(status))
+            throw new AppException("Le commande est déjà " + status.getDesc(), HttpStatus.BAD_REQUEST);
         order = handleStatusTransition(order, status);
         Order newOrder = orderRepository.save(order);
 
-        if (status == OrderStatus.VALIDATED && newOrder.getStatus() == status)
+        if (status.equals(OrderStatus.VALIDATED) && newOrder.getStatus().equals(status))
             updateDeliveredProducts(newOrder.getProductsOrders());
 
 
         return Map.of(
                 "message", "Le commande est " + newOrder.getStatus().getDesc() + " avec succès!",
                 "status", 200,
-                "data", newOrder
+                "data", orderMapper.toDto(newOrder),
+                "stock", status.equals(OrderStatus.VALIDATED) && newOrder.getStatus().equals(status)
         );
     }
 
     private List<ProductsOrder> buildProductsOrders(Order order,List<ProductsOrderDTO> productsOrderDTOS) {
         return productsOrderDTOS.stream()
                 .map(pod -> {
+                    // Calculer le montant sans modifier les quantités en stock
                     Map<String, Object> fifoResult = calculateAmountFIFO(pod.getProductName(), pod.getQuantity());
                     pod.setAmount(((Number) fifoResult.getOrDefault("amount", 0)).doubleValue());
 
@@ -267,23 +256,32 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void updateDeliveredProducts(List<ProductsOrder> productsOrders) {
-        List<Product> products = productsOrders.stream()
-                .map(ProductsOrder::getProduct)
-                .filter(Objects::nonNull)
-                .toList();
-        if (!products.isEmpty()) {
-            products.forEach(p -> {
-                p = productRepository.save(p);
-                int quantity = getQyProductsOrder(productsOrders, p);
-                stockMovementService.create(p, quantity, StockMovementType.SORTIE);
-            });
-        }
+        Map<String, Integer> productQuantities = productsOrders.stream()
+                .collect(Collectors.groupingBy(
+                        po -> po.getProduct().getName(),
+                        Collectors.summingInt(ProductsOrder::getQuantity)
+                ));
+
+        productQuantities.forEach(this::deductStockFIFO);
     }
 
-    private Integer getQyProductsOrder(List<ProductsOrder> productsOrders, Product product) {
-        return productsOrders.stream()
-                .filter(po -> po.getId().getProductId().equals(product.getUuid()))
-                .findAny().get().getQuantity();
+    private void deductStockFIFO(String productName, Integer quantityToDeduct) {
+        List<Product> products = productRepository.findByNameOrderByUpdatedAtAsc(productName);
+
+        int remaining = quantityToDeduct;
+
+        for (Product p : products) {
+            if (remaining <= 0) break;
+            if (p.getQuantity() == 0) continue;
+
+            int deductQty = Math.min(p.getQuantity(), remaining);
+            p.setQuantity(p.getQuantity() - deductQty);
+
+            p = productRepository.save(p);
+            stockMovementService.create(p, deductQty, StockMovementType.SORTIE);
+
+            remaining -= deductQty;
+        }
     }
 
     private Map<String, Object> calculateAmountFIFO(String productName, Integer quantityRequested) {
@@ -299,7 +297,7 @@ public class OrderServiceImpl implements OrderService {
 
         double amount = 0;
         int quantityRest = quantityRequested;
-        List<Product> listUpdated = new ArrayList<>();
+        List<Product> listProducts = new ArrayList<>();
 
         for (Product p : products) {
             if (quantityRest <= 0) break;
@@ -308,13 +306,12 @@ public class OrderServiceImpl implements OrderService {
             int useQty = Math.min(p.getQuantity(), quantityRest);
             amount += useQty * p.getUnitPrice();
 
-            p.setQuantity(p.getQuantity() - useQty);
-            listUpdated.add(p);
+            listProducts.add(p);
             quantityRest -= useQty;
         }
 
         return Map.of(
-                "products", listUpdated,
+                "products", listProducts,
                 "amount", amount
         );
     }
