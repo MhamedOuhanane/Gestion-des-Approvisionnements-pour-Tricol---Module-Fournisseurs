@@ -10,6 +10,7 @@ import com.tricol.tricol.model.entity.ProductsOrder;
 import com.tricol.tricol.model.entity.Supplier;
 import com.tricol.tricol.model.entity.id.ProductsOrderId;
 import com.tricol.tricol.model.enums.OrderStatus;
+import com.tricol.tricol.model.enums.StockMovementType;
 import com.tricol.tricol.model.mapper.OrderMapper;
 import com.tricol.tricol.model.mapper.ProductsOrderMapper;
 import com.tricol.tricol.repository.OrderRepository;
@@ -17,6 +18,7 @@ import com.tricol.tricol.repository.ProductRepository;
 import com.tricol.tricol.repository.SupplierRepository;
 import com.tricol.tricol.service.interfaces.OrderService;
 import com.tricol.tricol.service.interfaces.ProductService;
+import com.tricol.tricol.service.interfaces.StockMovementService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,15 +35,15 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final ProductRepository productRepository;
-    private final ProductsOrderMapper productsOrderMapper;
     private final SupplierRepository supplierRepository;
+    private final StockMovementService stockMovementService;
 
-    public OrderServiceImpl(OrderRepository orderRepository, OrderMapper orderMapper, ProductRepository productRepository, ProductsOrderMapper productsOrderMapper, SupplierRepository supplierRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, OrderMapper orderMapper, ProductRepository productRepository, SupplierRepository supplierRepository, StockMovementService stockMovementService) {
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
         this.productRepository = productRepository;
-        this.productsOrderMapper = productsOrderMapper;
         this.supplierRepository = supplierRepository;
+        this.stockMovementService = stockMovementService;
     }
 
     @Override
@@ -135,8 +137,12 @@ public class OrderServiceImpl implements OrderService {
             throw new AppException("L'identifiant du commande ne peut pas être vide", HttpStatus.BAD_REQUEST);
         if (dto == null)
             throw new AppException("Les informations du commande ne peuvent pas être vides", HttpStatus.BAD_REQUEST);
+
         Order order = orderRepository.findDetailedByUuid(uuid)
                 .orElseThrow(() -> new AppException("Aucun commande trouvé avec cet identifiant", HttpStatus.NOT_FOUND));
+        if (order.getStatus() != OrderStatus.PENDING)
+            throw new AppException("Transition non autorisée : seule une commande 'En attente' peut être modifier", HttpStatus.BAD_REQUEST);
+
         boolean hasChanges = false;
         List<ProductsOrder> existing = order.getProductsOrders();
         List<ProductsOrder> updated = buildProductsOrders(order, dto.getProductsOrders());
@@ -264,10 +270,20 @@ public class OrderServiceImpl implements OrderService {
         List<Product> products = productsOrders.stream()
                 .map(ProductsOrder::getProduct)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .toList();
         if (!products.isEmpty()) {
-            productRepository.saveAll(products);
+            products.forEach(p -> {
+                p = productRepository.save(p);
+                int quantity = getQyProductsOrder(productsOrders, p);
+                stockMovementService.create(p, quantity, StockMovementType.SORTIE);
+            });
         }
+    }
+
+    private Integer getQyProductsOrder(List<ProductsOrder> productsOrders, Product product) {
+        return productsOrders.stream()
+                .filter(po -> po.getId().getProductId().equals(product.getUuid()))
+                .findAny().get().getQuantity();
     }
 
     private Map<String, Object> calculateAmountFIFO(String productName, Integer quantityRequested) {

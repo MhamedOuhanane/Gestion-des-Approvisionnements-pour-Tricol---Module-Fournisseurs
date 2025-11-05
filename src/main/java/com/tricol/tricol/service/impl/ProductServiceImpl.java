@@ -3,9 +3,11 @@ package com.tricol.tricol.service.impl;
 import com.tricol.tricol.exception.AppException;
 import com.tricol.tricol.model.dto.ProductDTO;
 import com.tricol.tricol.model.entity.Product;
+import com.tricol.tricol.model.enums.StockMovementType;
 import com.tricol.tricol.model.mapper.ProductMapper;
 import com.tricol.tricol.repository.ProductRepository;
 import com.tricol.tricol.service.interfaces.ProductService;
+import com.tricol.tricol.service.interfaces.StockMovementService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,19 +15,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final StockMovementService stockMovementService;
 
-    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, StockMovementService stockMovementService) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
+        this.stockMovementService = stockMovementService;
     }
 
 
@@ -37,22 +38,28 @@ public class ProductServiceImpl implements ProductService {
         String message;
         int status = 201;
 
-        Optional<Product> ProductOpt = productRepository.findByNameAndUnitPrice(dto.getName(), dto.getUnitPrice());
+        Optional<Product> productOpt = productRepository.findByNameAndUnitPrice(dto.getName(), dto.getUnitPrice());
 
         Product product;
-        if (ProductOpt.isPresent()) {
-            product = ProductOpt.get();
-            product.setQuantity(product.getQuantity() + dto.getQuantity());
-            message = "Les informations du produit existant mise à jour";
+        if (productOpt.isPresent()) {
+            product = productOpt.get();
+            int oldQuantity = product.getQuantity();
+            int newQuantity = oldQuantity + dto.getQuantity();
+            product.setQuantity(newQuantity);
+            productRepository.save(product);
+            message = "La quantité du produit existant a été augmentée avec succès.";
             status = 200;
         } else if (!productRepository.findByNameOrderByUpdatedAtAsc(dto.getName()).isEmpty()) {
                 product = productMapper.toEntity(dto);
                 message = "Nouveau produit créé avec le même nom '" + product.getName() + "' et prix différent";
+
         } else {
             product = productMapper.toEntity(dto);
             message = "Le produit '" + product.getName() + "' a été ajouté avec succès!";
         }
         product = productRepository.save(product);
+        stockMovementService.create(product, dto.getQuantity(), StockMovementType.ENTREE);
+
         if (dto.getUuid() != null && !dto.getUuid().equals(product.getUuid())) {
             productRepository.delete(productMapper.toEntity(dto));
         }
@@ -121,37 +128,44 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(uuid)
                 .orElseThrow(() -> new AppException("Aucun produit trouvé avec cet identifiant", HttpStatus.NOT_FOUND));
         boolean updated = false;
+        boolean updateQy = false;
 
-        if (!product.getName().equals(dto.getName())) {
+        if (dto.getName() != null && !product.getName().equals(dto.getName())) {
             product.setName(dto.getName());
             updated = true;
         }
-        if (!product.getCategory().equals(dto.getCategory())) {
+        if (dto.getCategory() != null && !product.getCategory().equals(dto.getCategory())) {
             product.setCategory(dto.getCategory());
             updated = true;
         }
-        if (!product.getDescription().equals(dto.getDescription())) {
+        if (dto.getDescription() != null && !product.getDescription().equals(dto.getDescription())) {
             product.setDescription(dto.getDescription());
             updated = true;
         }
-        if (!product.getUnitPrice().equals(dto.getUnitPrice())) {
+        if (dto.getUnitPrice() != null && !product.getUnitPrice().equals(dto.getUnitPrice())) {
             product.setUnitPrice(dto.getUnitPrice());
             updated = true;
         }
-        if (!product.getQuantity().equals(dto.getQuantity())) {
+        if (dto.getQuantity() != null && !product.getQuantity().equals(dto.getQuantity())) {
             product.setQuantity(dto.getQuantity());
             updated = true;
+            updateQy = true;
         }
 
-        if (updated) {
+        if (dto.getName() != null && !product.getName().equals(dto.getName())
+            || dto.getUnitPrice() != null && !product.getUnitPrice().equals(dto.getUnitPrice())) {
             return create(productMapper.toDto(product));
-        } else {
-            return Map.of(
-                    "message", "Aucun champ du fournisseur n'a été modifié.",
-                    "status", 200,
-                    "data", productMapper.toDto(product)
-            );
         }
+        if (updated) {
+            productRepository.save(product);
+            if (updateQy)
+                stockMovementService.create(product, dto.getQuantity(), StockMovementType.ADJUSTMENT);
+        }
+        return Map.of(
+                "message", updated ? "Le commande  a été mis à jour avec succès!" : "Aucun champ du produit n'a été modifié.",
+                "status", 200,
+                "data", productMapper.toDto(product)
+        );
     }
 
     @Override

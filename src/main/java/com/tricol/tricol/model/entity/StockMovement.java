@@ -37,6 +37,14 @@ public class StockMovement extends Auditable{
 
     public StockMovement() {}
 
+    public StockMovement(LocalDateTime date, Integer quantity, StockMovementType type, Product product) {
+        this.uuid = uuid;
+        this.date = date;
+        this.quantity = quantity;
+        this.type = type;
+        this.product = product;
+    }
+
     public StockMovement(UUID uuid, LocalDateTime date, Integer quantity, StockMovementType type, Product product) {
         this.uuid = uuid;
         this.date = date;

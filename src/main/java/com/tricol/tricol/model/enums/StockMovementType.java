@@ -1,10 +1,9 @@
 package com.tricol.tricol.model.enums;
 
 public enum StockMovementType {
-    PENDING("En attente"),
-    VALIDATED("Validé"),
-    DELIVERED("Livré"),
-    CANCELED("Annulé");
+    ENTREE("Entrée"),
+    SORTIE("Sortie"),
+    ADJUSTMENT("Ajustement");
 
     private final String desc;
 
@@ -16,3 +15,4 @@ public enum StockMovementType {
         return desc;
     }
 }
+
