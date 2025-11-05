@@ -72,7 +72,15 @@ public class StockMovementServiceImpl implements StockMovementService {
         return Map.of(
                 "message", message,
                 "status", 200,
-                "data", data
+                "data", data,
+                "pagination", Map.of(
+                        "page", stockMovements.getNumber(),
+                        "size", stockMovements.getSize(),
+                        "totalElements", stockMovements.getTotalElements(),
+                        "totalPages", stockMovements.getTotalPages(),
+                        "isFirst", stockMovements.isFirst(),
+                        "isLast", stockMovements.isLast()
+                )
         );
     }
 }

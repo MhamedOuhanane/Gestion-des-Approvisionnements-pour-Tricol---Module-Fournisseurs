@@ -133,7 +133,8 @@ public class ProductController {
         Map<String, Object> filter = Map.of(
                 "page", page,
                 "size", size,
-                "type", type
+                "type", type,
+                "productId", productId
         );
         var result = stockMovementService.findAll(filter);
         return ResponseEntity.status((int) result.getOrDefault("status", 200)).body(result);

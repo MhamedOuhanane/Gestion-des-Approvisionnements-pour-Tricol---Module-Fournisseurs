@@ -60,7 +60,7 @@ public class SupplierServiceImpl implements SupplierService {
         String city = (String) map.getOrDefault("city", "");
         String company = (String) map.getOrDefault("company", "");
         String contact = (String) map.getOrDefault("contact", "");
-        Page<Supplier> suppliers = suppliers = supplierRepository.findByCityContainingAndContactContainingAndCompanyContaining(city, contact, company, pageable);
+        Page<Supplier> suppliers = supplierRepository.findByCityContainingAndContactContainingAndCompanyContaining(city, contact, company, pageable);
         String message;
         Object data;
         if (suppliers.isEmpty()) {

@@ -155,6 +155,8 @@ public class OrderServiceImpl implements OrderService {
             hasChanges = true;
         }
         if (existing.size() != updated.size() || !new HashSet<>(existing).containsAll(updated)) {
+            if (!order.getStatus().equals(OrderStatus.PENDING))
+                throw new AppException("La modification n'est pas autorisée : seule la liste des produits d'une commande en attente peut être modifiée.", HttpStatus.BAD_REQUEST);
             order.getProductsOrders().clear();
             order.getProductsOrders().addAll(updated);
             order.setTotalAmount(calculateTotalAmount(updated));
@@ -179,7 +181,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findDetailedByUuid(uuid)
                 .orElseThrow(() -> new AppException("Aucun commande trouvé avec cet identifiant", HttpStatus.NOT_FOUND));
         if (order.getStatus() != OrderStatus.PENDING && order.getStatus() != OrderStatus.CANCELED)
-            throw new AppException("Transition non autorisée : seule une commande 'Annulé' ou 'En attente' peut être supprimer", HttpStatus.BAD_REQUEST);
+            throw new AppException("Suppression non autorisée : seule une commande 'Annulé' ou 'En attente' peut être supprimer", HttpStatus.BAD_REQUEST);
         orderRepository.delete(order);
         boolean deleted = !orderRepository.existsById(uuid);
         String message = deleted
@@ -212,7 +214,7 @@ public class OrderServiceImpl implements OrderService {
 
 
         return Map.of(
-                "message", "Le commande est " + newOrder.getStatus().getDesc() + " avec succès!",
+                "message", "Le commande est " + status.getDesc() + " avec succès!",
                 "status", 200,
                 "data", orderMapper.toDto(newOrder),
                 "stock", status.equals(OrderStatus.VALIDATED) && newOrder.getStatus().equals(status)

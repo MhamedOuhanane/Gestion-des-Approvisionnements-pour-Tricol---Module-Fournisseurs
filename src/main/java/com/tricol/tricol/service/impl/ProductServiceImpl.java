@@ -162,7 +162,7 @@ public class ProductServiceImpl implements ProductService {
                 stockMovementService.create(product, dto.getQuantity(), StockMovementType.ADJUSTMENT);
         }
         return Map.of(
-                "message", updated ? "Le commande  a été mis à jour avec succès!" : "Aucun champ du produit n'a été modifié.",
+                "message", updated ? "Le produit a été mis à jour avec succès!" : "Aucun champ du produit n'a été modifié.",
                 "status", 200,
                 "data", productMapper.toDto(product)
         );
@@ -177,8 +177,8 @@ public class ProductServiceImpl implements ProductService {
         productRepository.delete(product);
         boolean deleted = productRepository.findById(uuid).isPresent();
         String message = !deleted
-                ? "Le fournisseur a été supprimé avec succès."
-                : "Échec de la suppression du fournisseur.";
+                ? "Le Produit a été supprimé avec succès."
+                : "Échec de la suppression du produit.";
         int status = deleted ? 200 : 500;
         return Map.of(
                 "message", message,
