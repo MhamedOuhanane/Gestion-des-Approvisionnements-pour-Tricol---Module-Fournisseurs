@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("/api/vi/orders")
 @Tag(name = "Commandes", description = "Gestion des commandes")
 public class OrderController {
 

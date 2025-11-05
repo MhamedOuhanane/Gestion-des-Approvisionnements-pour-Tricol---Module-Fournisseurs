@@ -57,7 +57,7 @@ public class StockMovementServiceImpl implements StockMovementService {
         Page<StockMovement> stockMovements = stockMovementRepository.findByProductAndType(productId, type, pageable);
 
         String message = stockMovements.isEmpty() ?
-                productId != null ?
+                product != null ?
                         "Aucune mouvement de stock n'existe pour ce produit":
                         "Aucune mouvement de stock n'existe dans le système":
                 product != null ?
