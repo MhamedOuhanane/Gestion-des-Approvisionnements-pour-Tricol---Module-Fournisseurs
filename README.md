@@ -138,7 +138,7 @@ Montant Total = Σ (Prix Unitaire Produit × Quantité Commandée)
 
 ## 🔌 Endpoints API
 
-### Fournisseurs (`/api/vi/suppliers`)
+### Fournisseurs (`/api/v1/suppliers`)
 | Méthode | Endpoint | Description |
 |---------|----------|-------------|
 | GET | `/` | Liste paginée des fournisseurs (filtres: ville, société, contact) |

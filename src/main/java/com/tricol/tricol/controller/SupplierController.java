@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @Tag(name = "Fournisseurs", description = "API de gestion des fournisseurs (création, mise à jour, suppression, recherche).")
 @RestController
-@RequestMapping("/api/vi/suppliers")
+@RequestMapping("/api/v1/suppliers")
 public class SupplierController {
     private final SupplierService supplierService;
 

@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @Tag(name = "Produits", description = "API de gestion des produits (ajout, mise à jour, suppression, recherche, mouvements de stock).")
 @RestController
-@RequestMapping("/api/vi/products")
+@RequestMapping("/api/v1/products")
 public class ProductController {
     private final ProductService productService;
     private final StockMovementService stockMovementService;
