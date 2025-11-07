@@ -224,7 +224,6 @@ public class OrderServiceImpl implements OrderService {
     private List<ProductsOrder> buildProductsOrders(Order order,List<ProductsOrderDTO> productsOrderDTOS) {
         return productsOrderDTOS.stream()
                 .map(pod -> {
-                    // Calculer le montant sans modifier les quantités en stock
                     Map<String, Object> fifoResult = calculateAmountFIFO(pod.getProductName(), pod.getQuantity());
                     pod.setAmount(((Number) fifoResult.getOrDefault("amount", 0)).doubleValue());
 

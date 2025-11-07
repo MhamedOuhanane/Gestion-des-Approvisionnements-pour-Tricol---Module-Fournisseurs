@@ -1,0 +1,399 @@
+{
+	"info": {
+		"_postman_id": "1ed41d41-0611-4d97-a23e-2880fbfbc2c6",
+		"name": "Tricol",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42982101"
+	},
+	"item": [
+		{
+			"name": "Fournisseurs",
+			"item": [
+				{
+					"name": "Fournisseurs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/suppliers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"suppliers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Creation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"company\": \"instagrame\", \r\n    \"address\": \"Fes\", \r\n    \"contact\": \"fournissour2\", \r\n    \"email\": \"fournissour2@gmial.com\", \r\n    \"phone\": \"+212687285943\", \r\n    \"city\": \"Fes\", \r\n    \"ice\": 98898947549578\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/suppliers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"suppliers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modification",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"city\": \"Maroc.Fes\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/suppliers/b7c486e1-1a34-461d-aa93-4a4bea389a69",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"suppliers",
+								"b7c486e1-1a34-461d-aa93-4a4bea389a69"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Recherche",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/suppliers/b7c486e1-1a34-461d-aa93-4a4bea389a69",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"suppliers",
+								"b7c486e1-1a34-461d-aa93-4a4bea389a69"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Suppression",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/suppliers/ef39b026-391f-47ac-b2a9-94b62d6c2070",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"suppliers",
+								"ef39b026-391f-47ac-b2a9-94b62d6c2070"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Recherche par Email",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Recherche par Ice",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Produits",
+			"item": [
+				{
+					"name": "Récupérer tous les produits",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Produit",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Tissu Sergé 65% Polyester 35% Coton 250g/m²\",\r\n  \"category\": \"Matières premières\",\r\n  \"description\": \"Tissu résistant et respirant utilisé pour la fabrication de vestes et pantalons professionnels Tricol.\",\r\n  \"unitPrice\": 32.50,\r\n  \"quantity\": 1200\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modifier un Produit",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Tissu Sergé 65% Polyester 35% Coton 250g/m²\",\r\n  \"category\": \"Matières premières\",\r\n  \"description\": \"Tissu résistant et respirant utilisé pour la fabrication de vestes et pantalons professionnels Tricol.\",\r\n  \"unitPrice\": 37.50,\r\n  \"quantity\": 1000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/products/a112947d-43d4-46fb-9c5b-e051d20c9054",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products",
+								"a112947d-43d4-46fb-9c5b-e051d20c9054"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Trouver un Produit",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Supprimer un Produit",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/suppliers/a112947d-43d4-46fb-9c5b-e051d20c9054",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"suppliers",
+								"a112947d-43d4-46fb-9c5b-e051d20c9054"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Recuperer Mouvement de stock",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Commandes",
+			"item": [
+				{
+					"name": "Recuperer tous les commandes",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Create Commande",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"orderDate\": \"2025-11-04T12:30:00\",\r\n  \"status\": \"PENDING\",\r\n  \"supplierId\": \"6220e7c6-aff9-4702-acc2-429c067853f6\",\r\n  \"productsOrders\": [\r\n    {\r\n      \"productName\": \"Tissu coton\",\r\n      \"quantity\": 50\r\n    },\r\n    {\r\n      \"productName\": \"Fil polyester\",\r\n      \"quantity\": 200\r\n    },\r\n    {\r\n      \"productName\": \"Machines à coudre\",\r\n      \"quantity\": 1\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modifier Commande",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"orderDate\": \"2025-11-04T12:30:00\",\r\n  \"status\": \"PENDING\",\r\n  \"supplierId\": \"6220e7c6-aff9-4702-acc2-429c067853f6\",\r\n  \"productsOrders\": [\r\n    {\r\n      \"productName\": \"Tissu coton\",\r\n      \"quantity\": 50\r\n    },\r\n    {\r\n      \"productName\": \"Machines à coudre\",\r\n      \"quantity\": 1\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/orders/2439c209-78d1-476c-a4ae-3b46ecf31f3e",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"orders",
+								"2439c209-78d1-476c-a4ae-3b46ecf31f3e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modifier Status",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"VALIDATED\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/orders/5a2b2b08-575c-48e1-95a6-c3b6b06f4bee",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"orders",
+								"5a2b2b08-575c-48e1-95a6-c3b6b06f4bee"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Trouver un Commande",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Supprimer Commandes",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/orders/5cb1000f-91cb-48dd-917d-418f2b49199c",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"orders",
+								"5cb1000f-91cb-48dd-917d-418f2b49199c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Recuperer les commande d'un fournisseur",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
