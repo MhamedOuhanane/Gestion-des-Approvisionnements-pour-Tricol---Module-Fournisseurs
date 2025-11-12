@@ -353,7 +353,43 @@ public class SupplierServiceImplTest {
         AppException exception = assertThrows(AppException.class, () -> supplierService.findByEmail(email));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
-        assertEquals("Aucun fournisseur trouvé avec cet identifiant", exception.getMessage());
+        assertEquals("Aucun fournisseur trouvé avec cet email", exception.getMessage());
+    }
+
+    @Test
+    public void findSupplierByIce_shouldSucceed_whenSupplierFound() {
+        String ice = "mhmde@gmail.com";
+        Supplier supplier = new Supplier();
+        SupplierDTO dto = new SupplierDTO();
+
+        when(supplierRepository.findByIce(ice)).thenReturn(Optional.of(supplier));
+        when(supplierMapper.toDto(supplier)).thenReturn(dto);
+
+        Map<String, Object> result = supplierService.findByIce(ice);
+
+        assertEquals(200, result.get("status"));
+        assertEquals("Fournisseur trouvé avec succès", result.get("message"));
+        assertEquals(dto, result.get("supplier"));
+    }
+
+    @Test
+    public void findSupplierByIce_shouldThrowException_whenIceIsNull() {
+        AppException exception = assertThrows(AppException.class, () -> supplierService.findByIce(null));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("L'ICE du fournisseur ne peut pas être vide", exception.getMessage());
+    }
+
+    @Test
+    public void findSupplierByIce_shouldThrowException_whenSupplierNotFound() {
+        String ice = "mhamed@gmail.com";
+
+        when(supplierRepository.findByIce(ice)).thenReturn(Optional.empty());
+
+        AppException exception = assertThrows(AppException.class, () -> supplierService.findByIce(ice));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals("Aucun fournisseur trouvé avec cet code ice", exception.getMessage());
     }
 
 }

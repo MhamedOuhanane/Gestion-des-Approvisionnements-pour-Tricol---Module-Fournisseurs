@@ -166,7 +166,7 @@ public class SupplierServiceImpl implements SupplierService {
     public Map<String, Object> findByEmail(String email) {
         if (email == null) throw new AppException("L'address mail du fournisseur ne peut pas être vide", HttpStatus.BAD_REQUEST);
         Supplier supplier = supplierRepository.findByEmail(email)
-                .orElseThrow(() -> new AppException("Aucun fournisseur trouvé avec cet identifiant", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new AppException("Aucun fournisseur trouvé avec cet email", HttpStatus.NOT_FOUND));
         return Map.of(
                 "message", "Fournisseur trouvé avec succès",
                 "status", 200,
@@ -178,7 +178,7 @@ public class SupplierServiceImpl implements SupplierService {
     public Map<String, Object> findByIce(String ice) {
         if (ice == null) throw new AppException("L'ICE du fournisseur ne peut pas être vide", HttpStatus.BAD_REQUEST);
         Supplier supplier = supplierRepository.findByIce(ice)
-                .orElseThrow(() -> new AppException("Aucun fournisseur trouvé avec cet identifiant", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new AppException("Aucun fournisseur trouvé avec cet code ice", HttpStatus.NOT_FOUND));
         return Map.of(
                 "message", "Fournisseur trouvé avec succès",
                 "status", 200,
