@@ -10,8 +10,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -142,6 +147,72 @@ public class SupplierServiceImplTest {
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
         assertEquals("Aucun fournisseur trouvé avec cet identifiant", exception.getMessage());
+    }
+
+    @Test
+    public void findAllSupplier_shouldSucceed_whenSuppliersFounds() {
+        Supplier supplier = new Supplier();
+        supplier.setUuid(UUID.randomUUID());
+        supplier.setCompany("Zara");
+
+        SupplierDTO supplierDTO = new SupplierDTO();
+        supplierDTO.setUuid(supplier.getUuid());
+        supplierDTO.setCompany(supplier.getCompany());
+
+        Page<Supplier> list = new PageImpl<>(List.of(supplier));
+
+        when(supplierRepository.findByCityContainingAndContactContainingAndCompanyContaining(
+                "", "", "", PageRequest.of(0, 5, Sort.by("contact").ascending())
+        )).thenReturn(list);
+        when(supplierMapper.toDto(supplier)).thenReturn(supplierDTO);
+
+        Map<String, Object> pagination = Map.of(
+                "page", list.getNumber(),
+                "size", list.getSize(),
+                "totalElements", list.getTotalElements(),
+                "totalPages", list.getTotalPages(),
+                "isFirst", list.isFirst(),
+                "isLast", list.isLast()
+        );
+
+        Map<String, Object> result = supplierService.findAll(Map.of());
+
+
+        assertEquals("Les fournisseurs trouvés avec succès", result.get("message"));
+        assertEquals(200, result.get("status"));
+        assertEquals(pagination, result.get("pagination"));
+
+        List<SupplierDTO> dtos = (List<SupplierDTO>) result.get("data");
+        assertEquals(1, dtos.size());
+        assertEquals("Zara", dtos.get(0).getCompany());
+    }
+
+    @Test
+    public void findAllSupplier_shouldSucceed_whenNoSupplierIsFounds() {
+        Page<Supplier> list = new PageImpl<>(List.of());
+
+        when(supplierRepository.findByCityContainingAndContactContainingAndCompanyContaining(
+                "", "", "", PageRequest.of(0, 5, Sort.by("contact").ascending())
+        )).thenReturn(list);
+
+        Map<String, Object> pagination = Map.of(
+                "page", list.getNumber(),
+                "size", list.getSize(),
+                "totalElements", list.getTotalElements(),
+                "totalPages", list.getTotalPages(),
+                "isFirst", list.isFirst(),
+                "isLast", list.isLast()
+        );
+
+        Map<String, Object> result = supplierService.findAll(Map.of());
+
+
+        assertEquals("Aucun fournisseur n'existe dans le système", result.get("message"));
+        assertEquals(200, result.get("status"));
+        assertEquals(pagination, result.get("pagination"));
+
+        List<SupplierDTO> dtos = (List<SupplierDTO>) result.get("data");
+        assertEquals(0, dtos.size());
     }
 
     @Test
