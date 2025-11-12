@@ -320,4 +320,40 @@ public class SupplierServiceImplTest {
         assertEquals("Aucun fournisseur trouvé avec cet identifiant", exception.getMessage());
     }
 
+    @Test
+    public void findSupplierByEmail_shouldSucceed_whenSupplierFound() {
+        String email = "mhmde@gmail.com";
+        Supplier supplier = new Supplier();
+        SupplierDTO dto = new SupplierDTO();
+
+        when(supplierRepository.findByEmail(email)).thenReturn(Optional.of(supplier));
+        when(supplierMapper.toDto(supplier)).thenReturn(dto);
+
+        Map<String, Object> result = supplierService.findByEmail(email);
+
+        assertEquals(200, result.get("status"));
+        assertEquals("Fournisseur trouvé avec succès", result.get("message"));
+        assertEquals(dto, result.get("supplier"));
+    }
+
+    @Test
+    public void findSupplierByEmail_shouldThrowException_whenEmailIsNull() {
+        AppException exception = assertThrows(AppException.class, () -> supplierService.findByEmail(null));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("L'address mail du fournisseur ne peut pas être vide", exception.getMessage());
+    }
+
+    @Test
+    public void findSupplierByEmail_shouldThrowException_whenSupplierNotFound() {
+        String email = "mhamed@gmail.com";
+
+        when(supplierRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        AppException exception = assertThrows(AppException.class, () -> supplierService.findByEmail(email));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals("Aucun fournisseur trouvé avec cet identifiant", exception.getMessage());
+    }
+
 }
