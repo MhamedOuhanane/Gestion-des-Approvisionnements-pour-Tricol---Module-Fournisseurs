@@ -74,7 +74,7 @@ public class SupplierServiceImplTest {
     }
 
     @Test
-    public  void createSupplier_shouldThrowException_whenEmailAlreadyExist() {
+    public  void createSupplier_shouldThrowException_whenEmailIsAlreadyExist() {
         SupplierDTO supplierDTO = new SupplierDTO();
         supplierDTO.setCompany("Zara");
         supplierDTO.setAddress("Maroc");
@@ -143,4 +143,124 @@ public class SupplierServiceImplTest {
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
         assertEquals("Aucun fournisseur trouvé avec cet identifiant", exception.getMessage());
     }
+
+    @Test
+    public void updateSupplier_shouldSucceed_whenValidUpdate() {
+        UUID uuid = UUID.randomUUID();
+        Supplier supplier = new Supplier(
+                uuid,
+                "Zara",
+                "Maroc",
+                "Rabat",
+                "Mohammed M",
+                "mohammed@gmail.com",
+                "+212783959384",
+                "M98748593024895"
+        );
+        SupplierDTO supplierDTO = new SupplierDTO();
+        supplierDTO.setCompany("SE");
+        supplierDTO.setAddress("France");
+        supplierDTO.setCity("Paris");
+        supplierDTO.setContact("Supplier");
+        supplierDTO.setEmail("supplier@gmail.com");
+        supplierDTO.setIce("784693075659048");
+
+        when(supplierRepository.findById(uuid)).thenReturn(Optional.of(supplier));
+        when(supplierRepository.findByEmail(supplierDTO.getEmail())).thenReturn(Optional.empty());
+        when(supplierRepository.save(supplier)).thenReturn(supplier);
+        supplierDTO.setUuid(uuid);
+        when(supplierMapper.toDto(supplier)).thenReturn(supplierDTO);
+
+        Map<String, Object> result = supplierService.update(uuid, supplierDTO);
+
+        assertEquals(200, result.get("status"));
+        assertEquals("Le fournisseur '" + supplier.getEmail() + "' a été mis à jour avec succès!", result.get("message"));
+        assertEquals(supplierDTO, result.get("data"));
+    }
+
+    @Test
+    public void updateSupplier_shouldSucceed_whenNoFieldsModified() {
+        UUID uuid = UUID.randomUUID();
+        Supplier supplier = new Supplier(
+                uuid,
+                "Zara",
+                "Maroc",
+                "Rabat",
+                "Mohammed M",
+                "mohammed@gmail.com",
+                "+212783959384",
+                "M98748593024895"
+        );
+        SupplierDTO supplierDTO = new SupplierDTO();
+        supplierDTO.setCompany(supplier.getCompany());
+        supplierDTO.setAddress(supplier.getAddress());
+        supplierDTO.setCity(supplier.getCity());
+        supplierDTO.setContact(supplier.getContact());
+        supplierDTO.setEmail(supplier.getEmail());
+        supplierDTO.setIce(supplier.getIce());
+
+        when(supplierRepository.findById(uuid)).thenReturn(Optional.of(supplier));
+        supplierDTO.setUuid(uuid);
+        when(supplierMapper.toDto(supplier)).thenReturn(supplierDTO);
+
+        Map<String, Object> result = supplierService.update(uuid, supplierDTO);
+
+        assertEquals(200, result.get("status"));
+        assertEquals("Aucun champ du fournisseur n'a été modifié.", result.get("message"));
+        assertEquals(supplierDTO, result.get("data"));
+    }
+
+    @Test
+    public void updateSupplier_shouldThrowException_whenUuidIsNull() {
+        AppException exception = assertThrows(AppException.class, () -> supplierService.update(null, new SupplierDTO()));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("L'identifiant du fournisseur ne peut pas être vide", exception.getMessage());
+    }
+
+    @Test
+    public void updateSupplier_shouldThrowException_whenDtoIsNull() {
+        AppException exception = assertThrows(AppException.class, () -> supplierService.update(UUID.randomUUID(), null));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("Les informations de fournisseur ne peut pas étre vides", exception.getMessage());
+    }
+
+    @Test
+    public void updateSupplier_shouldThrowException_whenSupplierNotFound() {
+        UUID uuid = UUID.randomUUID();
+
+        when(supplierRepository.findById(uuid)).thenReturn(Optional.empty());
+
+        AppException exception = assertThrows(AppException.class, () -> supplierService.update(uuid, new SupplierDTO()));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals("Aucun fournisseur trouvé avec cet identifiant", exception.getMessage());
+    }
+
+    @Test
+    public void updateSupplier_shouldThrowException_whenUpdateEmailIsAlreadyExist() {
+        UUID uuid = UUID.randomUUID();
+        Supplier supplier = new Supplier(
+                uuid,
+                "Zara",
+                "Maroc",
+                "Rabat",
+                "Mohammed M",
+                "mohammed@gmail.com",
+                "+212783959384",
+                "M98748593024895"
+        );
+        SupplierDTO supplierDTO = new SupplierDTO();
+        supplierDTO.setEmail("supplier@gmail.com");
+
+        when(supplierRepository.findById(uuid)).thenReturn(Optional.of(supplier));
+        when(supplierRepository.findByEmail(supplierDTO.getEmail())).thenReturn(Optional.of(new Supplier()));
+
+        AppException exception = assertThrows(AppException.class, () -> supplierService.update(uuid, supplierDTO));
+
+        assertEquals(HttpStatus.CONFLICT, exception.getStatus());
+        assertEquals("Un fournisseur avec l'email '" + supplierDTO.getEmail() + "' existe déjà.", exception.getMessage());
+    }
+
 }
