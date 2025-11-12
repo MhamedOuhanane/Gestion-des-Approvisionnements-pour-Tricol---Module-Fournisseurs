@@ -154,7 +154,7 @@ public class SupplierServiceImpl implements SupplierService {
         String message = !deleted
                 ? "Le fournisseur a été supprimé avec succès."
                 : "Échec de la suppression du fournisseur.";
-        int status = deleted ? 200 : 500;
+        int status = !deleted ? 200 : 500;
         return Map.of(
                 "message", message,
                 "status", status,

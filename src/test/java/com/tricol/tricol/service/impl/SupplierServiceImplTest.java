@@ -93,7 +93,7 @@ public class SupplierServiceImplTest {
     }
 
     @Test
-    public void findSupplier_shouldSucceed_whenValidData() {
+    public void findSupplierById_shouldSucceed_whenValidData() {
         UUID uuid = UUID.randomUUID();
         Supplier supplier = new Supplier(
                 uuid,
@@ -126,7 +126,7 @@ public class SupplierServiceImplTest {
     }
 
     @Test
-    public void findSupplier_shouldThrowException_whenUuidIsNull() {
+    public void findSupplierById_shouldThrowException_whenUuidIsNull() {
         AppException exception = assertThrows(AppException.class, () -> supplierService.findById(null));
 
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
@@ -134,7 +134,7 @@ public class SupplierServiceImplTest {
     }
 
     @Test
-    public void findSupplier_shouldThrowException_whenSupplierNotFound() {
+    public void findSupplierById_shouldThrowException_whenSupplierNotFound() {
         UUID uuid = UUID.randomUUID();
 
         when(supplierRepository.findById(uuid)).thenReturn(Optional.empty());
@@ -261,6 +261,63 @@ public class SupplierServiceImplTest {
 
         assertEquals(HttpStatus.CONFLICT, exception.getStatus());
         assertEquals("Un fournisseur avec l'email '" + supplierDTO.getEmail() + "' existe déjà.", exception.getMessage());
+    }
+
+    @Test
+    public void deleteSupplier_shouldSucceed_whenSupplierDeletedSuccessfully() {
+        UUID uuid = UUID.randomUUID();
+        Supplier supplier = new Supplier();
+        supplier.setUuid(uuid);
+
+        when(supplierRepository.findById(uuid))
+                .thenReturn(Optional.of(supplier))
+                .thenReturn(Optional.empty());
+
+        Map<String, Object> result = supplierService.delete(uuid);
+
+        assertEquals(200, result.get("status"));
+        assertEquals("Le fournisseur a été supprimé avec succès.", result.get("message"));
+        assertEquals(Optional.empty(), result.get("data"));
+    }
+
+    @Test
+    public void deleteSupplier_shouldFail_whenDeletingSupplierFails() {
+        UUID uuid = UUID.randomUUID();
+        Supplier supplier = new Supplier();
+        supplier.setUuid(uuid);
+        SupplierDTO dto = new SupplierDTO();
+        dto.setUuid(uuid);
+
+        when(supplierRepository.findById(uuid))
+                .thenReturn(Optional.of(supplier))
+                .thenReturn(Optional.of(supplier));
+        when(supplierMapper.toDto(supplier)).thenReturn(dto);
+
+        Map<String, Object> result = supplierService.delete(uuid);
+
+        assertEquals(500, result.get("status"));
+        assertEquals("Échec de la suppression du fournisseur.", result.get("message"));
+        assertEquals(dto, result.get("data"));
+    }
+
+    @Test
+    public void deleteSupplier_shouldThrowException_whenUuidIsNull() {
+        AppException exception = assertThrows(AppException.class, () -> supplierService.delete(null));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("L'identifiant du fournisseur ne peut pas être vide", exception.getMessage());
+    }
+
+    @Test
+    public void deleteSupplier_shouldThrowException_whenSupplierNotFound() {
+        UUID uuid = UUID.randomUUID();
+
+        when(supplierRepository.findById(uuid)).thenReturn(Optional.empty());
+
+        AppException exception = assertThrows(AppException.class, () -> supplierService.delete(uuid));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals("Aucun fournisseur trouvé avec cet identifiant", exception.getMessage());
     }
 
 }
