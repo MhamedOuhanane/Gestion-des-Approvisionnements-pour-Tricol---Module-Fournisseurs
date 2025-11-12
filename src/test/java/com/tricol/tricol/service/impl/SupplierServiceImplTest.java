@@ -91,4 +91,56 @@ public class SupplierServiceImplTest {
         assertEquals(HttpStatus.CONFLICT, exception.getStatus());
         assertEquals("Un fournisseur avec l'email '" + supplierDTO.getEmail() + "' existe déjà.", exception.getMessage());
     }
+
+    @Test
+    public void findSupplier_shouldSucceed_whenValidData() {
+        UUID uuid = UUID.randomUUID();
+        Supplier supplier = new Supplier(
+                uuid,
+                "Zara",
+                "Maroc",
+                "Rabat",
+                "Mohammed M",
+                "mohammed@gmail.com",
+                "+212783959384",
+                "M98748593024895"
+        );
+        SupplierDTO supplierDTO = new SupplierDTO();
+        supplierDTO.setUuid(supplier.getUuid());
+        supplierDTO.setCompany(supplier.getCompany());
+        supplierDTO.setAddress(supplier.getAddress());
+        supplierDTO.setCity(supplier.getCity());
+        supplierDTO.setContact(supplier.getContact());
+        supplierDTO.setEmail(supplier.getEmail());
+        supplierDTO.setPhone(supplier.getPhone());
+        supplierDTO.setIce(supplier.getIce());
+
+        when(supplierRepository.findById(uuid)).thenReturn(Optional.of(supplier));
+        when(supplierMapper.toDto(supplier)).thenReturn(supplierDTO);
+
+        Map<String, Object> result = supplierService.findById(uuid);
+
+        assertEquals(supplierDTO, result.get("supplier"));
+        assertEquals(200, result.get("status"));
+        assertEquals("Fournisseur trouvé avec succès", result.get("message"));
+    }
+
+    @Test
+    public void findSupplier_shouldThrowException_whenUuidIsNull() {
+        AppException exception = assertThrows(AppException.class, () -> supplierService.findById(null));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("L'identifiant du fournisseur ne peut pas être vide", exception.getMessage());
+    }
+
+    @Test
+    public void findSupplier_shouldThrowException_whenSupplierNotFound() {
+        UUID uuid = UUID.randomUUID();
+
+        when(supplierRepository.findById(uuid)).thenReturn(Optional.empty());
+        AppException exception = assertThrows(AppException.class, () -> supplierService.findById(uuid));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals("Aucun fournisseur trouvé avec cet identifiant", exception.getMessage());
+    }
 }
