@@ -144,6 +144,59 @@ public class ProductServiceImplTest {
         assertEquals("Les informations du produit ne peuvent pas être vides", exception.getMessage());
     }
 
+    @Test
+    public void findProductById_shouldSucceed_whenProductIsFound() {
+        UUID uuid = UUID.randomUUID();
+        Product product = new Product();
+        product.setUuid(uuid);
+        product.setName("Fermetures éclair");
+        product.setCategory("Accessoires");
+        product.setDescription("Fermetures éclair de haute qualité pour vêtements professionnels");
+        product.setUnitPrice(2.);
+        product.setQuantity(400);
+
+        ProductDTO dto = new ProductDTO();
+        dto.setUuid(product.getUuid());
+        dto.setName(product.getName());
+        dto.setCategory(product.getCategory());
+        dto.setDescription(product.getDescription());
+        dto.setUnitPrice(product.getUnitPrice());
+        dto.setQuantity(product.getQuantity());
+
+        when(productRepository.findById(uuid)).thenReturn(Optional.of(product));
+        when(productMapper.toDto(product)).thenReturn(dto);
+
+        Map<String, Object> result = productService.findById(uuid);
+
+        ProductDTO data = (ProductDTO) result.get("data");
+
+        assertEquals(200, result.get("status"));
+        assertEquals("Le produit trouvé avec succès!", result.get("message"));
+        assertEquals(dto, data);
+        assertEquals(dto.getUuid(), data.getUuid());
+        assertEquals(dto.getName(), data.getName());
+    }
+
+    @Test
+    public void findProductById_shouldThrowException_whenUuidIsNull() {
+        AppException exception = assertThrows(AppException.class, () -> productService.findById(null));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("L'identifiant du produit ne peut pas être vide", exception.getMessage());
+    }
+
+    @Test
+    public void findProductById_shouldThrowException_whenProductNotFound() {
+        UUID uuid = UUID.randomUUID();
+
+        when(productRepository.findById(uuid)).thenReturn(Optional.empty());
+
+        AppException exception = assertThrows(AppException.class, () -> productService.findById(uuid));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals("Aucun produit trouvé avec cet identifiant", exception.getMessage());
+    }
+
 
 
 }
