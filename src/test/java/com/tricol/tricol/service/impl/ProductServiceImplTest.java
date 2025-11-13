@@ -12,6 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -195,6 +199,75 @@ public class ProductServiceImplTest {
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
         assertEquals("Aucun produit trouvé avec cet identifiant", exception.getMessage());
+    }
+
+    @Test
+    public void findAllProduct_shouldSucceed_whenProductsFounds() {
+        UUID uuid = UUID.randomUUID();
+        Product product = new Product();
+        product.setUuid(uuid);
+        product.setName("Fermetures éclair");
+
+        ProductDTO dto = new ProductDTO();
+        dto.setUuid(product.getUuid());
+        dto.setName(product.getName());
+
+        Page<Product> listPages = new PageImpl<>(List.of(product));
+
+        when(productRepository.findByNameContainingAndCategoryContaining(
+                PageRequest.of(0, 5, Sort.by("name").ascending()),
+                "",
+                ""
+        )).thenReturn(listPages);
+        when(productMapper.toDto(product)).thenReturn(dto);
+
+        Map<String, Object> pagination = Map.of(
+                "page", listPages.getNumber(),
+                "size", listPages.getSize(),
+                "totalElements", listPages.getTotalElements(),
+                "totalPages", listPages.getTotalPages(),
+                "isFirst", listPages.isFirst(),
+                "isLast", listPages.isLast()
+        );
+
+        Map<String, Object> result = productService.findAll(Map.of());
+
+        assertEquals("Les produits trouvés avec succès", result.get("message"));
+        assertEquals(200, result.get("status"));
+        assertEquals(pagination, result.get("pagination"));
+
+        List<ProductDTO> dtos = (List<ProductDTO>) result.get("data");
+        assertEquals(1, dtos.size());
+        assertEquals("Fermetures éclair", dtos.get(0).getName());
+    }
+
+    @Test
+    public void findAllProduct_shouldSucceed_whenNoProductIsFounds() {
+        Page<Product> listPages = new PageImpl<>(List.of());
+
+        when(productRepository.findByNameContainingAndCategoryContaining(
+                PageRequest.of(0, 5, Sort.by("name").ascending()),
+                "",
+                ""
+        )).thenReturn(listPages);
+
+        Map<String, Object> pagination = Map.of(
+                "page", listPages.getNumber(),
+                "size", listPages.getSize(),
+                "totalElements", listPages.getTotalElements(),
+                "totalPages", listPages.getTotalPages(),
+                "isFirst", listPages.isFirst(),
+                "isLast", listPages.isLast()
+        );
+
+        Map<String, Object> result = productService.findAll(Map.of());
+
+        assertEquals("Aucun produit n'existe dans le système", result.get("message"));
+        assertEquals(200, result.get("status"));
+        assertEquals(pagination, result.get("pagination"));
+
+        List<ProductDTO> dtos = (List<ProductDTO>) result.get("data");
+        assertEquals(0, dtos.size());
     }
 
 
