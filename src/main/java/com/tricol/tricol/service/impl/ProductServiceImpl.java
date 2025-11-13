@@ -46,7 +46,6 @@ public class ProductServiceImpl implements ProductService {
             int oldQuantity = product.getQuantity();
             int newQuantity = oldQuantity + dto.getQuantity();
             product.setQuantity(newQuantity);
-            productRepository.save(product);
             message = "La quantité du produit existant a été augmentée avec succès.";
             status = 200;
         } else if (!productRepository.findByNameOrderByUpdatedAtAsc(dto.getName()).isEmpty()) {
@@ -59,10 +58,6 @@ public class ProductServiceImpl implements ProductService {
         }
         product = productRepository.save(product);
         stockMovementService.create(product, dto.getQuantity(), StockMovementType.ENTREE);
-
-        if (dto.getUuid() != null && !dto.getUuid().equals(product.getUuid())) {
-            productRepository.delete(productMapper.toEntity(dto));
-        }
 
         return Map.of(
                 "message", message,
@@ -154,7 +149,8 @@ public class ProductServiceImpl implements ProductService {
 
         if (dto.getName() != null && !product.getName().equals(dto.getName())
             || dto.getUnitPrice() != null && !product.getUnitPrice().equals(dto.getUnitPrice())) {
-            return create(productMapper.toDto(product));
+            if (productRepository.findByNameAndUnitPrice(dto.getName(), dto.getUnitPrice()).isPresent())
+                return create(productMapper.toDto(product));
         }
         if (updated) {
             productRepository.save(product);
