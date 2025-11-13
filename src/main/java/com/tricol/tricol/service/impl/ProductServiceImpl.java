@@ -175,7 +175,7 @@ public class ProductServiceImpl implements ProductService {
         String message = !deleted
                 ? "Le Produit a été supprimé avec succès."
                 : "Échec de la suppression du produit.";
-        int status = deleted ? 200 : 500;
+        int status = !deleted ? 200 : 500;
         return Map.of(
                 "message", message,
                 "status", status,

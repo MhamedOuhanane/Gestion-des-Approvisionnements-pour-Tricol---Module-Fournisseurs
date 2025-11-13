@@ -270,6 +270,62 @@ public class ProductServiceImplTest {
         assertEquals(0, dtos.size());
     }
 
+    @Test
+    public void deleteProduct_shouldSucceed_whenProductDeletedSuccessfully() {
+        UUID uuid = UUID.randomUUID();
+        Product product = new Product();
+        product.setUuid(uuid);
 
+        when(productRepository.findById(uuid))
+                .thenReturn(Optional.of(product))
+                .thenReturn(Optional.empty());
+
+        Map<String, Object> result = productService.delete(uuid);
+
+        assertEquals(200, result.get("status"));
+        assertEquals("Le Produit a été supprimé avec succès.", result.get("message"));
+        assertEquals(Optional.empty(), result.get("data"));
+    }
+
+    @Test
+    public void deleteProduct_shouldFail_whenDeletingProductFails() {
+        UUID uuid = UUID.randomUUID();
+        Product product = new Product();
+        product.setUuid(uuid);
+
+        ProductDTO dto = new ProductDTO();
+        dto.setUuid(uuid);
+
+        when(productRepository.findById(uuid))
+                .thenReturn(Optional.of(product))
+                .thenReturn(Optional.of(product));
+        when(productMapper.toDto(product)).thenReturn(dto);
+
+        Map<String, Object> result = productService.delete(uuid);
+
+        assertEquals(500, result.get("status"));
+        assertEquals("Échec de la suppression du produit.", result.get("message"));
+        assertEquals(dto, result.get("data"));
+    }
+
+    @Test
+    public void deleteProduct_shouldThrowException_whenProductNotFound() {
+        UUID uuid = UUID.randomUUID();
+
+        when(productRepository.findById(uuid)).thenReturn(Optional.empty());
+
+        AppException exception = assertThrows(AppException.class, () -> productService.delete(uuid));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals("Aucun produit trouvé avec cet identifiant", exception.getMessage());
+    }
+
+    @Test
+    public void deleteProduct_shouldThrowException_whenUuidIsNull() {
+        AppException exception = assertThrows(AppException.class, () -> productService.delete(null));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+        assertEquals("L'identifiant du produit ne peut pas être vide", exception.getMessage());
+    }
 
 }
