@@ -5,6 +5,7 @@ import com.tricol.tricol.repository.OrderRepository;
 import com.tricol.tricol.repository.ProductRepository;
 import com.tricol.tricol.repository.SupplierRepository;
 import com.tricol.tricol.service.interfaces.StockMovementService;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
